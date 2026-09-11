@@ -2,10 +2,5 @@
 repo oluşturuldu
 11 eylül güncellemesi
 1
-2
-3
-4
-5
-6
-7
-8
+mobil yazılım geliştirme benim için sınırları belirli bir projeyi baştan sona geliştirebilmek demek
+flutter eğitimi sayesinde güncel gereksinimlere uygun çözümler üretebilmeyi umuyorum

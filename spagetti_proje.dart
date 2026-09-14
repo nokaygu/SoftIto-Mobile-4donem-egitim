@@ -6,6 +6,12 @@ class Urun {
   String tip;
 
   Urun(this.id, this.ad, this.fiyat, this.stok, this.tip);
+}
+
+// Fiziksel ve dijital bir enuma konur backendden koduna göre döner
+class FizikselUrun extends Urun {
+  FizikselUrun(String id, String ad, double fiyat, int stok)
+    : super(id, ad, fiyat, stok, "FIZIKSEL");
 
   double kargoUcretiHesapla() {
     return 29.90;
@@ -14,31 +20,47 @@ class Urun {
 
 class DijitalUrun extends Urun {
   DijitalUrun(String id, String ad, double fiyat, int stok)
-      : super(id, ad, fiyat, stok, "DIJITAL");
-
-  @override
-  double kargoUcretiHesapla() {
-    throw Exception("Dijital urunlerde kargo hesaplanamaz!");
-  }
+    : super(id, ad, fiyat, stok, "DIJITAL");
 }
 
-abstract class ISiparisIslemleri {
+abstract class SiparisServisi {
   void siparisKaydet(String orderId, double tutar);
-  void odemeYap(String tip, double tutar);
+}
+
+abstract class OdemeServisi {
+  void odemeYap(double tutar);
+}
+
+abstract class KargoServisi {
   void kargoGonder(String orderId, String adres);
+}
+
+abstract class MailServisi {
   void mailGonder(String email, String mesaj);
+}
+
+abstract class SmsServisi {
   void smsGonder(String tel, String mesaj);
+}
+
+abstract class FaturaServisi {
   void faturaYazdir(String orderId);
 }
 
-class SqliteVeritabani {
+abstract class Veritabani {
+  void kaydet(String sql);
+}
+
+class SqliteVeritabani implements Veritabani {
+  @override
   void kaydet(String sql) {
     print("DB calistirildi: " + sql);
   }
 }
 
-class SmtpMailServisi {
-  void mailAt(String to, String body) {
+class SmtpMailServisi implements MailServisi {
+  @override
+  void mailGonder(String to, String body) {
     print("SMTP Mail gonderildi: " + to);
   }
 }
@@ -49,61 +71,79 @@ class NetgsmSmsServisi {
   }
 }
 
-class SiparisYoneticisi implements ISiparisIslemleri {
-  SqliteVeritabani db = SqliteVeritabani();
-  SmtpMailServisi mailci = SmtpMailServisi();
-  NetgsmSmsServisi smsci = NetgsmSmsServisi();
-
+class SepetYoneticisi implements SiparisServisi {
+  //dependency injection denemesi
+  final Veritabani db;
   @override
   void siparisKaydet(String orderId, double tutar) {
     db.kaydet("INSERT INTO siparisler VALUES ('$orderId', $tutar)");
   }
 
-  @override
-  void odemeYap(String tip, double tutar) {
-    if (tip == "KREDI_KARTI") {
-      print("$tutar TL Kredi kartindan POS ile cekildi.");
-    } else if (tip == "HAVALE") {
-      print("$tutar TL Havale kontrol edildi.");
-    } else if (tip == "KAPIDA_ODEME") {
-      print("$tutar TL Kapida odeme tahsil edilecek (Komisyon +15 TL).");
-    } else if (tip == "CRYPTO") {
-      print("$tutar TL USDT transferi onaylandi.");
-    } else {
-      print("Gecersiz odeme yontemi");
-    }
-  }
+  SepetYoneticisi(this.db);
+}
 
+class KrediKartiOdeme implements OdemeServisi {
+  @override
+  void odemeYap(double tutar) {
+    print("$tutar TL Kredi kartindan POS ile cekildi.");
+  }
+}
+
+class HavaleOdeme implements OdemeServisi {
+  @override
+  void odemeYap(double tutar) {
+    print("$tutar TL Havale kontrol edildi.");
+  }
+}
+
+class KapidaOdeme implements OdemeServisi {
+  @override
+  void odemeYap(double tutar) {
+    print("$tutar TL Kapida odeme tahsil edilecek (Komisyon +15 TL).");
+  }
+}
+
+class Crypto implements OdemeServisi {
+  @override
+  void odemeYap(double tutar) {
+    print("$tutar TL USDT transferi onaylandi.");
+  }
+}
+
+class KargoYoneticisi implements KargoServisi {
+  final String orderID;
+  final String adres;
   @override
   void kargoGonder(String orderId, String adres) {
     print("MNG Kargo takip fis basildi: $adres");
   }
 
-  @override
-  void mailGonder(String email, String mesaj) {
-    mailci.mailAt(email, mesaj);
-  }
+  KargoYoneticisi(this.orderID, this.adres);
+}
 
-  @override
-  void smsGonder(String tel, String mesaj) {
-    smsci.smsYolla(tel, mesaj);
-  }
-
+class FaturaYoneticisi implements FaturaServisi {
+  final String orderID;
   @override
   void faturaYazdir(String orderId) {
     print("Fatura PDF cikarildi: $orderId");
   }
 
+  FaturaYoneticisi(this.orderID);
+}
+
+class SiparisYoneticisi {
+  SiparisServisi siparisServisi;
+  SiparisYoneticisi(this.siparisServisi);
   void siparisTamamla(
-      String orderId,
-      List<Urun> sepet,
-      String odemeTipi,
-      String musteriAdi,
-      String email,
-      String tel,
-      String adres,
-      String kuponKodu) {
-    
+    String orderId,
+    List<Urun> sepet,
+    OdemeServisi odemeYontemi,
+    String musteriAdi,
+    String email,
+    String tel,
+    String adres,
+    String kuponKodu,
+  ) {
     double toplam = 0;
 
     for (var i = 0; i < sepet.length; i++) {
@@ -112,7 +152,12 @@ class SiparisYoneticisi implements ISiparisIslemleri {
         return;
       }
       toplam += sepet[i].fiyat;
-      toplam += sepet[i].kargoUcretiHesapla();
+      //enum dönmeli
+      if (sepet[i].tip == "FIZIKSEL") {
+        FizikselUrun fizikselUrun = sepet[i] as FizikselUrun;
+        toplam += fizikselUrun.kargoUcretiHesapla();
+      }
+
       sepet[i].stok--;
     }
 
@@ -127,19 +172,30 @@ class SiparisYoneticisi implements ISiparisIslemleri {
     double kdv = toplam * 0.20;
     double sonTutar = toplam + kdv;
 
-    odemeYap(odemeTipi, sonTutar);
-    siparisKaydet(orderId, sonTutar);
-    faturaYazdir(orderId);
-    mailGonder(email, "Sayin $musteriAdi, siparisiniz alindi. Tutar: $sonTutar TL");
-    smsGonder(tel, "Siparisiniz onaylandi: $orderId");
-    kargoGonder(orderId, adres);
+    odemeYontemi.odemeYap(sonTutar);
+
+    siparisServisi.siparisKaydet(orderId, sonTutar);
+    final faturaYoneticisi = FaturaYoneticisi(orderId);
+    faturaYoneticisi.faturaYazdir(orderId);
+    final smtpMailServisi = SmtpMailServisi();
+    smtpMailServisi.mailGonder(
+      email,
+      "Sayin $musteriAdi, siparisiniz alindi. Tutar: $sonTutar TL",
+    );
+    final smsServisi = NetgsmSmsServisi();
+    smsServisi.smsYolla(tel, "Siparisiniz onaylandi: $orderId");
+    final kargoYoneticisi = KargoYoneticisi(orderId, adres);
+    kargoYoneticisi.kargoGonder;
   }
 }
 
 void main() {
-  var siparisci = SiparisYoneticisi();
+  //veritabanı servisi global scopeda tutulsun ki yeniden yaratılmasın
+  final veritabani = SqliteVeritabani();
+  final sepetYoneticisi = SepetYoneticisi(veritabani);
+  var siparisci = SiparisYoneticisi(sepetYoneticisi);
 
-  var urun1 = Urun("1", "Kablosuz Mouse", 450.0, 5, "FIZIKSEL");
+  var urun1 = FizikselUrun("1", "Kablosuz Mouse", 450.0, 5);
   var urun2 = DijitalUrun("2", "Flutter Kursu E-Kitap", 150.0, 100);
 
   var sepet = <Urun>[urun1, urun2];
@@ -147,7 +203,7 @@ void main() {
   siparisci.siparisTamamla(
     "SP-9921",
     sepet,
-    "KREDI_KARTI",
+    KrediKartiOdeme(),
     "Selahaddin",
     "selahaddin@kodvance.com",
     "05551112233",

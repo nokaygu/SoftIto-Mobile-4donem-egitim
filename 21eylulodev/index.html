@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Iframe</title>
+    </head>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background: khaki;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .card {
+            background-color: blueviolet;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 52px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+        iframe {
+            width: 100%;
+            border-radius: 8px;
+            border: none;
+        }
+        details{
+            margin-bottom: 10px;
+            border:1px solid #cbd5e1;
+            border-radius:6px;
+            padding:10px;
+        }
+        summary{
+            font-weight: bold;
+            cursor:pointer;
+            color:#1e40af;
+        }
+        details[open]{background: #eff6ff;}
+        details p{
+            font-size:13px;
+            color:#334155;
+            margin-top:8px;
+            margin-bottom:0;
+        }
+        dialog{
+            border:none;
+            border-radius:12px;
+            padding:24px;
+            max-width:360px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        dialog::backdrop{
+            background:rgba(15,23,42,0.6);
+            backdrop-filter:blur(3px);
+        }
+    </style>
+    <body>
+        <div class="card">
+            <iframe
+                width="560"
+                height="315"
+                src="https://youtu.be/lNCycVbFsm8?playsinline=1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="
+                    accelerometer;
+                    autoplay;
+                    clipboard-write;
+                    encrypted-media;
+                    gyroscope;
+                    picture-in-picture;
+                    web-share;
+                "
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+            ></iframe>
+        </div>
+        <div class="card">
+            <h3>Ürün Stok Durumu</h3>
+            <label for="p1">Ürün stok oranı</label>
+            <progress id="p1" value="75" max="100">75%</progress>
+            <div class="hint">Ürün stok:75% tamamlandı</div>
+            <hr
+                style="margin: 16px 0; border: 0; border-top: 1px solid #e2e8f0"
+            />
+        </div>
+        <div class="box">
+            <h3>Sıkça sorulan sorular</h3>
+            <details>
+                <summary>Cihazın pili ne kadar</summary>
+                <p>Cihazın pili 10.000 mah'tır</p>
+            </details>
+            <details>
+                <summary>Cihazın kutusunun içinden neler çıkıyor?</summary>
+                <p>Telefonla beraber ürünün kutusundan şarj aleti ve koruyucu kılıf çıkmaktadır</p>
+            </details>
+            <details>
+                <summary>taksit seçenekleri var mı?</summary>
+                <p>tüm kredi kartlarına vade farksız 3 taksit seçeneğimiz bulunmaktadır.</p>
+            </details>
+        </div>
+        <div class="box">
+            <h3>Detaylı bilgi al</h3>
+            <button class= "btn-modal" onclick="document.getElementById('bilgiAlModal').showModal()">
+                Bilgi al
+            </button>
+        </div>
+        <dialog id="bilgiAlModal">
+            <h3 style="margin-top: 0px;">Teknolojik gelişmeler ilerliyor</h3>
+            <div
+                style="background:#f1f5f9; padding: 10px;text-align:center;font-weight: bold;
+                border-radius: 6px;color:black;">Akıllı telefon indirimi</div>
+            <div style="margin-top: 16px;text-align: right;">
+                <div>
+                    <button onclick="document.getElementById('bilgiAlModal').close()" style="padding:6px 12px;
+                        border-radius:4px;cursor:pointer;">kapat</button>
+                </div>
+            </div>
+        </dialog>
+    </body>
+</html>

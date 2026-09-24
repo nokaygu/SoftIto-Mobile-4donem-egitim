@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Javascript çalışmaları</title>
+    </head>
+    <body>
+        <script>
+            const indirimliSepetTutari = (tutar, indirimOrani) =>
+                tutar - (tutar * tutarindirimOrani) / 100;
+            //sarjsurresi tahmint mevcutyuzde hedefyuzde bataryakw istasyonkwt const
+            // yüzde 1 pil ederi 1000kw veya başka bir değer oolabilir yuzdeBirKw olarak aldım
+            const sarjSureHesapla = (
+                mevcutYuzde,
+                hedefYuzde,
+                bataryaKw,
+                istasyonKw,
+                yuzdeBirKw,
+            ) => {
+                if (hedefYuzde <= mevcutYuzde) {
+                    return 0;
+                }
+                const gerekenYuzde = hedefYuzde - mevcutYuzde;
+                const sarjKw = bataryaKw > istasyonKw ? istasyonKw : bataryaKw;
+                return (yuzdeBirKw * gerekenYuzde) / sarjKw;
+            };
+            //gece gündüz döngüsü ekliyoruz kw başı fiyat olarak belirledim
+            const geceGunduzFiyat = { gece: 5, gunduz: 6 };
+            const fiyatHesapla = (
+                mevcutYuzde,
+                hedefYuzde,
+                yuzdeBirKw,
+                vakit,
+            ) => {
+                if (hedefYuzde <= mevcutYuzde) {
+                    return 0;
+                }
+                const gerekenYuzde = hedefYuzde - mevcutYuzde;
+                const toplamKw = yuzdeBirKw * gerekenYuzde;
+                return toplamKw * geceGunduzFiyat[vakit];
+            };
+            console.log(fiyatHesapla(20, 40, 50, "gece"));
+        </script>
+    </body>
+</html>

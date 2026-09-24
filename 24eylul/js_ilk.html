@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JS ilk ders</title>
+    </head>
+    <body>
+        <script>
+            /* //1.var felaketi süslü parantez dinlemez dışarıya sızar
+            if (true) {
+                var tehlikeliSayi = 999;
+            }
+            console.log("var sızdı mı ?", tehlikeliSayi);
+
+            //2.let ve const kalkanı: Süslü parantez bir oda çıkış yasak çıkamaz
+            if (true) {
+                let guvenliSayi = 42;
+                const PI = 3.1415;
+                console.log("oda içi", guvenliSayi, PI);
+            }
+            //3.const değiştirilmezlik kuralı
+            const API_URL = "https://www.kodusta.com/v1";
+            console.log(API_URL);
+            //let API_URL="tekrar eden link";
+
+            //dikkat edin buraya
+            const arac = { marka: "Togg", model: "T10X" };
+            console.log(arac);
+            arac.renk = "Beyaz";
+            console.log(arac);
+            //bu yasak kullanamyın
+           // arac={baska:"obje"};
+            //console.log(arac);
+            //
+            // veri tipleri ve tip dönüşümü
+            const isim="Selahaddin"; //string
+            const bataryaKapasite=88.5; //number (float/int ayrım almıyor)
+            const sarjTamamlandi=false; //boolean
+            let sonrakiRandevu; //undefined kutu va içi boş
+            const servisNotu=null; //null bilinçli boş değer
+            const büyükSayi=664646464646464646n//big integer
+            const gizliAnahtar=Symbol("id");//Symbol
+            console.log(typeof isim);
+            console.log(typeof bataryaKapasite);
+            console.log(typeof sarjTamamlandi);
+            console.log(typeof servisNotu);
+            console.log(typeof büyükSayi);
+              console.log(typeof gizliAnahtar);
+
+              //otomatik tip çevrimi
+              console.log("5"+2); // + işareti metin birleştirme
+              console.log("5"-2);//- işareti zorla stringi sayıya çevirir
+              console.log("5"*"4");//çarpma işlemi sayıya çeviri
+              console.log("bes"*2); //nan not a number
+              console.log(typeof(NaN) );
+              console.log(NaN==NaN);
+              console.log(Number.isNaN(NaN));
+
+
+              //manuel tip dönştürme(Profesyonel yolu)
+              const stringFiyat="1473.33";
+              const sayiFiyat=Number(stringFiyat);
+              const pixelDegeri=parseInt("48px",10);
+              const metinSayi=String(2026);
+
+              console.log(stringFiyat);
+              console.log(sayiFiyat);
+              console.log(pixelDegeri);
+              console.log(metinSayi);
+            //katı eşitlik
+            // neden her zaman === kullanmalıyız?
+            console.log(5 == "5"); //true gevşek eşitlik tipi zorla çevirir asla kullanma
+            console.log(5 === "5"); //false
+            console.log(0 == false); //true gevşek eşitlik
+            console.log(0 === false); //false
+            console.log(null == undefined); //true
+            console.log(null === undefined); //false
+
+            //template literals
+            const kullanici = "Esra Ergün";
+            const bakiye = 1000;
+            const harcama = 10000;
+
+            const eskiMesaj =
+                "Sayın " +
+                kullanici +
+                ", Kalan Bakiyeniz:" +
+                (bakiye - harcama) +
+                "TL-dir.";
+            console.log(eskiMesaj);
+            const modernMesaj = `Sayın ${kullanici},
+              Bugünkü harcamanız:${harcama}TL
+            Durum:${bakiye-harcama>1000 ? "Güvenli Bakiye":
+            "Kritik Bakiye"}`;
+            console.log(modernMesaj)
+
+
+            const bataryaSeviyesi = 14;
+            const istasyonUygunmu = true;
+            const bakiyeTl = 650;
+            const minimumGirisTutari = 200;
+
+            if (!istasyonUygunmu) {
+                console.log("İstasyon şuanda servis dışı veya meşgul");
+            } else if (bakiyeTl < minimumGirisTutari) {
+                console.log(
+                    `bakiye yetersiz! en az ${minimumGirisTutari} TL gereklidir.Mevcut:${bakiyeTl}TL`,
+                );
+            } else if (bataryaSeviyesi <= 20) {
+                console.log(
+                    "Kritik seviye ultra hızlı DC şarj moduna geçiliyor",
+                );
+            } else {
+                console.log("standard şarj başlatılabilir");
+            }
+            //jsde şu 6 değer false olarak kabul edilşir
+            // false,0,"",null,undefined,NaN
+            // bunundışındaki herşey[]boş diziolarak true olarak kabul edilir
+            const kullaniciGirdisi = 0;
+            if (kullaniciGirdisi) {
+                console.log("girdi dolu");
+            } else {
+                console.log("girdi boş");
+                }
+            //kosul?dogruysa_deger:yanlışsa_deger
+            const soketDurumu = "mesgul";
+            const durumMesaji =
+                soketDurumu === "uygun" ? "soket boşta" : "soket kullanımda";
+                console.log(durumMesaji);*/
+            //arrow function
+            //
+            // klasik fonksiyon
+            function toplaKlasik(sayi1, sayi2) {
+                return sayi1 + sayi2;
+            }
+            //modern fonksiyon (es6 standartlarıyla)
+            const toplaModern = (sayi1, sayi2) => {
+                return sayi1 + sayi2;
+            };
+            //tek satırlık funciton arrow
+            const toplaKisa = (sayi1, sayi2) => sayi1 + sayi2;
+
+            //tek parametreli
+            const karesiniAl = (sayi) => sayi * sayi;
+
+            const profilUret = (ad, rol) => ({
+                ad: ad,
+                rol: rol,
+                kayitTarihi: 2026,
+            });
+            console.log("toplama sonucu", toplaKisa(15, 27));
+            console.log(karesiniAl(8));
+            console.log("Profil", profilUret("tuba", "öğrenci"));
+            //meydan ıouma konusu İndirimli Sepet Tutarı hesaplayıcı
+            const indirimliSepetTutari = (tutar, indirimOrani) =>
+                tutar - (tutar * indirimOrani) / 100;
+            console.log(indirimliSepetTutari(100, 20));
+        </script>
+    </body>
+</html>

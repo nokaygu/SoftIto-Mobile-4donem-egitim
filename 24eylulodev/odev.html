@@ -7,40 +7,45 @@
     </head>
     <body>
         <script>
-            const indirimliSepetTutari = (tutar, indirimOrani) =>
-                tutar - (tutar * tutarindirimOrani) / 100;
+        const indirimliSepetTutari = (tutar, indirimOrani) =>
+            tutar - (tutar * indirimOrani) / 100;
             //sarjsurresi tahmint mevcutyuzde hedefyuzde bataryakw istasyonkwt const
             // yüzde 1 pil ederi 1000kw veya başka bir değer oolabilir yuzdeBirKw olarak aldım
+            const aracYuzdeBirKwDeğeri = {
+                tesla: 1.1,
+                togg: 1.2,
+                bmwxi: 1.3,
+            };
             const sarjSureHesapla = (
                 mevcutYuzde,
                 hedefYuzde,
                 bataryaKw,
                 istasyonKw,
-                yuzdeBirKw,
+                aractipi,
             ) => {
                 if (hedefYuzde <= mevcutYuzde) {
                     return 0;
                 }
                 const gerekenYuzde = hedefYuzde - mevcutYuzde;
                 const sarjKw = bataryaKw > istasyonKw ? istasyonKw : bataryaKw;
-                return (yuzdeBirKw * gerekenYuzde) / sarjKw;
+                return (aracYuzdeBirKwDeğeri[aractipi] * gerekenYuzde) / sarjKw;
             };
             //gece gündüz döngüsü ekliyoruz kw başı fiyat olarak belirledim
             const geceGunduzFiyat = { gece: 5, gunduz: 6 };
             const fiyatHesapla = (
                 mevcutYuzde,
                 hedefYuzde,
-                yuzdeBirKw,
+                aractipi,
                 vakit,
             ) => {
                 if (hedefYuzde <= mevcutYuzde) {
                     return 0;
                 }
                 const gerekenYuzde = hedefYuzde - mevcutYuzde;
-                const toplamKw = yuzdeBirKw * gerekenYuzde;
+                const toplamKw = aracYuzdeBirKwDeğeri[aractipi] * gerekenYuzde;
                 return toplamKw * geceGunduzFiyat[vakit];
             };
-            console.log(fiyatHesapla(20, 40, 50, "gece"));
+            console.log(fiyatHesapla(20, 40, "togg", "gece"));
         </script>
     </body>
 </html>

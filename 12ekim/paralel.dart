@@ -29,10 +29,22 @@ void main() {
   controller.sink.add(10);
   controller.sink.add(20);
   controller.sink.add(30);
-
+∏
   final broadcastStream = controller.stream.asBroadcastStream();
   broadcastStream.listen((d) => print("Uı ekranı: $d"));
   broadcastStream.listen((d) => print("Analitik servisi Ekranı: $d"));
 
   controller.close();
 }
+/*
+code --install-extension Dart-Code.dart-code \
+     --install-extension Dart-Code.flutter \
+     --install-extension usernamehw.error-lens \
+     --install-extension Nash.awesome-flutter-snippets \
+     --install-extension PKief.material-icon-theme \
+     --install-extension eamodio.gitlens \
+     --install-extension pflannery.vscode-version-lens \
+     --install-extension FelixAngelov.bloc \
+     --install-extension naumovs.color-highlight \
+     --install-extension streetsidesoftware.code-spell-checker
+     */

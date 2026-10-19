@@ -1,0 +1,101 @@
+# ==============================================================================
+# Susadım - .gitignore (Flutter & Güvenlik Standartları)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Ortam Değişkenleri, Gizli Anahtarlar ve API Token Koruması (Secrets)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.env.*
+*.key
+*.pem
+*.cer
+*.crt
+*.p12
+*.keystore
+*.jks
+key.properties
+local.properties
+credentials.json
+*credentials*.json
+*secret*
+*token*
+*.secret
+google-services.json
+GoogleService-Info.plist
+
+# ------------------------------------------------------------------------------
+# 2. Flutter & Dart Çıktıları
+# ------------------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+/coverage/
+**/doc/api/
+.widget_preview/
+
+# Sembol ve Karmaşıklık (Obfuscation) Haritaları
+app.*.symbols
+app.*.map.json
+
+# ------------------------------------------------------------------------------
+# 3. iOS ve macOS Yapılandırmaları & Geçici Dosyalar
+# ------------------------------------------------------------------------------
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.dill
+**/ios/Flutter/flutter_assets/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# ------------------------------------------------------------------------------
+# 4. Android Yapılandırmaları
+# ------------------------------------------------------------------------------
+/android/app/debug
+/android/app/profile
+/android/app/release
+.gradle/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+
+# ------------------------------------------------------------------------------
+# 5. IDE ve Editör Kalıntıları
+# ------------------------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# ------------------------------------------------------------------------------
+# 6. İşletim Sistemi ve Çeşitli Kalıntılar
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.class
+*.log
+*.pyc
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/

@@ -2,3 +2,16 @@
 .env.locale
 node_modules
 .DS_Store
+
+# Secrets & Environment
+*.env*
+*.key
+*.pem
+*.keystore
+*.jks
+key.properties
+local.properties
+*secret*
+*token*
+google-services.json
+GoogleService-Info.plist

@@ -1,0 +1,45 @@
+# VizyonMeet - Yapılacaklar Listesi ve İlerleme Takibi
+
+- [x] 1. Proje Kurulumu ve Bağımlılıklar
+  - [x] Flutter projesinin başlatılması (`flutter create . --org com.vizyonmeet --project-name videokonferans`)
+  - [x] `pubspec.yaml` dosyasına `agora_rtc_engine: ^6.3.2` ve `permission_handler: ^11.3.1` eklenmesi ve paketlerin çekilmesi (`flutter pub get`)
+- [x] 2. Platform İzinleri (Android & iOS)
+  - [x] `android/app/src/main/AndroidManifest.xml` izinlerinin eklenmesi (INTERNET, CAMERA, RECORD_AUDIO, MODIFY_AUDIO_SETTINGS, BLUETOOTH, ACCESS_NETWORK_STATE)
+  - [x] `ios/Runner/Info.plist` kamera ve mikrofon izinlerinin eklenmesi (`NSCameraUsageDescription`, `NSMicrophoneUsageDescription`)
+- [x] 3. Çekirdek (Core) Mimari ve Tasarım Sistemi
+  - [x] `lib/core/constants/agora_config.dart` (App ID: `7aad306718aa4fe1a09d2c2f9ba68136`, Testing Mode token: "")
+  - [x] `lib/core/constants/avatar_constants.dart` (5 özel tasarım avatar, ikonlar, gradyanlar, açıklamalar)
+  - [x] `lib/core/localization/app_strings.dart` (Türkçe & İngilizce eksiksiz sözlük)
+  - [x] `lib/core/localization/language_controller.dart` (Reaktif dil kontrolcüsü TR / EN)
+  - [x] `lib/core/permissions/permission_service.dart` (Kamera ve mikrofon izin servisi)
+  - [x] `lib/core/theme/app_theme_model.dart` (Tüm renk paleti modeli)
+  - [x] `lib/core/theme/app_themes.dart` (4 Kapsamlı tema: Neon Kırmızı-Siyah, Solarized Light, Nordic Aurora Dark, Emerald Matrix)
+  - [x] `lib/core/theme/theme_controller.dart` (Reaktif tema kontrolcüsü)
+  - [x] `lib/core/state/app_state.dart` (Merkezi singleton controller erişim merkezi)
+- [x] 4. Modeller (Features / Models)
+  - [x] `lib/features/models/user_model.dart`
+  - [x] `lib/features/models/chat_message_model.dart`
+  - [x] `lib/features/models/friend_model.dart`
+- [x] 5. Kontrolcüler (Features / Controllers)
+  - [x] `lib/features/controllers/auth_controller.dart` (ali/123, veli/123, profil ve avatar yönetimi)
+  - [x] `lib/features/controllers/conference_controller.dart` (Agora v6.x, katılma/ayrılma, mic/cam toggle, ses düzeyi, oda içi chat)
+  - [x] `lib/features/controllers/friends_controller.dart` (Arkadaş listesi, durumlar, hızlı konferans başlatma, özel mesajlaşma ve davet)
+  - [x] `lib/features/controllers/settings_controller.dart` (Mikrofon test simülasyonu/Agora volume, kamera test/önizleme/çevirme)
+- [x] 6. Yardımcı ve Ortak Widget'lar (Features / Widgets)
+  - [x] `lib/features/widgets/responsive_wrapper.dart` (Sıfır taşma garantili responsive yardımcı bileşenler)
+  - [x] `lib/features/widgets/video_grid_tile.dart` (Kamera açıkken AgoraVideoView, kapalıyken Avatar ve isim etiketi)
+  - [x] `lib/features/widgets/call_control_bar.dart` (Modern yuvarlak butonlar: Mic, Cam, Flip, Chat, Leave)
+  - [x] `lib/features/widgets/room_chat_panel.dart` (Konferans chat paneli ve kullanıcıya tıklayınca 'Arkadaş Ekle' / 'Özel Mesaj' modalı)
+- [x] 7. Ekranlar (Features / Views)
+  - [x] `lib/features/views/login_view.dart` (Giriş ekranı, ali/123 ve veli/123 hızlı giriş kartı, hızlı oda adı & katıl alanı, sıfır taşma)
+  - [x] `lib/features/views/main_shell_view.dart` (4 sekmeli modern BottomNavigationBar iskeleti)
+  - [x] `lib/features/views/conference/conference_lobby_view.dart` (Sekme 1: Oda adı, katıl/oluştur, mic/cam ön ayarları, avatar önizleme)
+  - [x] `lib/features/views/friends/friends_view.dart` (Sekme 2: Arkadaşlar listesi, doğrudan video konferans başlatma, özel mesaj/davet penceresi)
+  - [x] `lib/features/views/settings/settings_view.dart` & alt bileşenleri (Sekme 3: Mikrofon testi & ses seviyesi, kamera testi & yönü, TR/EN dil seçimi)
+  - [x] `lib/features/views/profile/profile_view.dart` (Sekme 4: 5 avatar seçimi, 4 ikonlu tema kartı, çıkış yap)
+  - [x] `lib/features/views/conference/conference_room_view.dart` (Tam ekran konferans, gizlenen alt bar, dikey modda Landscape SnackBar uyarısı, dinamik GridView, yuvarlak butonlar, chat paneli)
+- [x] 8. Ana Giriş Noktası (`lib/main.dart`)
+  - [x] `AppState` entegrasyonu, reaktif `ThemeData` ve dil desteği, sayfa yönlendirmeleri
+- [x] 9. Doğrulama ve Kod Analizi
+  - [x] `flutter analyze` ile 0 hata ve 0 uyarı doğrulaması (TAMAMLANDI - No issues found!)
+  - [x] Yatay (landscape) ve dikey (portrait) modlarda sıfır taşma kontrolü

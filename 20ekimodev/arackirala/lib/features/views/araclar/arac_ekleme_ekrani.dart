@@ -4,6 +4,7 @@ import '../../../core/state/app_state.dart';
 import '../../models/arac_model.dart';
 import '../../widgets/liquid_app_bar.dart';
 import '../../widgets/liquid_button.dart';
+import '../../widgets/liquid_dialog.dart';
 import '../../widgets/liquid_glass_card.dart';
 import '../../widgets/liquid_text_field.dart';
 
@@ -41,20 +42,20 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: const LiquidAppBar(title: 'Yeni Araç İlanı Ekle'),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildCarIdentityCard(),
+            _buildCarIdentityCard(context),
             const SizedBox(height: 14),
-            _buildPriceAndCityCard(),
+            _buildPriceAndCityCard(context),
             const SizedBox(height: 14),
-            _buildTransmissionAndFuelCard(),
+            _buildTransmissionAndFuelCard(context),
             const SizedBox(height: 14),
-            _buildDescriptionCard(),
+            _buildDescriptionCard(context),
             const SizedBox(height: 24),
             _buildSubmitButton(),
             const SizedBox(height: 20),
@@ -64,29 +65,29 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
     );
   }
 
-  Widget _buildCarIdentityCard() {
+  Widget _buildCarIdentityCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Araç Bilgileri',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700),
+            style: TextStyle(color: context.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
           LiquidTextField(
             controller: _markaCtrl,
             label: 'Marka',
             hintText: 'Örn: BMW, Mercedes, Audi',
-            validator: (v) => v == null || v.trim().isEmpty ? 'Marka boş bırakılamaz' : null,
+            validator: (v) => v == null || v.trim().length < 2 ? 'Marka en az 2 karakter olmalıdır' : null,
           ),
           const SizedBox(height: 12),
           LiquidTextField(
             controller: _modelCtrl,
             label: 'Model / Paket',
             hintText: 'Örn: 320i M Sport',
-            validator: (v) => v == null || v.trim().isEmpty ? 'Model boş bırakılamaz' : null,
+            validator: (v) => v == null || v.trim().length < 2 ? 'Model en az 2 karakter olmalıdır' : null,
           ),
           const SizedBox(height: 12),
           LiquidTextField(
@@ -94,22 +95,31 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
             label: 'Model Yılı',
             hintText: '2023',
             keyboardType: TextInputType.number,
-            validator: (v) => v == null || int.tryParse(v) == null ? 'Geçerli bir yıl giriniz' : null,
+            validator: (v) {
+              if (v == null || int.tryParse(v) == null) {
+                return 'Geçerli bir yıl giriniz';
+              }
+              final yil = int.parse(v);
+              if (yil < 1980 || yil > 2027) {
+                return 'Yıl 1980 ile 2027 arasında olmalıdır';
+              }
+              return null;
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPriceAndCityCard() {
+  Widget _buildPriceAndCityCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Fiyat ve Konum',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700),
+            style: TextStyle(color: context.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
           LiquidTextField(
@@ -118,8 +128,15 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
             hintText: 'Örn: 3500',
             keyboardType: TextInputType.number,
             prefixIcon: Icons.currency_lira_rounded,
-            validator: (v) =>
-                v == null || double.tryParse(v) == null ? 'Geçerli bir fiyat giriniz' : null,
+            validator: (v) {
+              if (v == null || double.tryParse(v) == null) {
+                return 'Geçerli bir fiyat giriniz';
+              }
+              if (double.parse(v) < 100) {
+                return 'Minimum günlük fiyat ₺100 olmalıdır';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 12),
           LiquidTextField(
@@ -127,71 +144,79 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
             label: 'Şehir / İlçe',
             hintText: 'İstanbul, Kadıköy',
             prefixIcon: Icons.location_on_outlined,
-            validator: (v) => v == null || v.trim().isEmpty ? 'Konum boş bırakılamaz' : null,
+            validator: (v) => v == null || v.trim().length < 3 ? 'Konum en az 3 karakter olmalıdır' : null,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTransmissionAndFuelCard() {
+  Widget _buildTransmissionAndFuelCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Teknik Detaylar',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700),
+            style: TextStyle(color: context.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
-          const Text('Vites Tipi', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text('Vites Tipi', style: TextStyle(color: context.textSecondaryColor, fontSize: 13)),
           const SizedBox(height: 8),
-          Row(
-            children: ['Otomatik', 'Manuel'].map((vites) {
-              final isSel = _vitesTipi == vites;
-              return Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: ChoiceChip(
-                  label: Text(vites),
-                  selected: isSel,
-                  selectedColor: AppColors.burgundyPrimary,
-                  backgroundColor: AppColors.surfaceVariant,
-                  labelStyle: TextStyle(
-                    color: isSel ? AppColors.textWhite : AppColors.textSecondary,
-                    fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                  onSelected: (val) => setState(() => _vitesTipi = vites),
-                ),
-              );
-            }).toList(),
-          ),
+          _buildChoiceRow(['Otomatik', 'Manuel'], _vitesTipi, (v) => setState(() => _vitesTipi = v)),
           const SizedBox(height: 12),
-          const Text('Yakıt Tipi', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text('Yakıt Tipi', style: TextStyle(color: context.textSecondaryColor, fontSize: 13)),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: ['Benzin', 'Dizel', 'Hibrit', 'Elektrik'].map((yakit) {
-              final isSel = _yakitTipi == yakit;
-              return ChoiceChip(
-                label: Text(yakit),
-                selected: isSel,
-                selectedColor: AppColors.burgundyPrimary,
-                backgroundColor: AppColors.surfaceVariant,
-                labelStyle: TextStyle(
-                  color: isSel ? AppColors.textWhite : AppColors.textSecondary,
-                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                ),
-                onSelected: (val) => setState(() => _yakitTipi = yakit),
-              );
-            }).toList(),
-          ),
+          _buildChoiceWrap(['Benzin', 'Dizel', 'Hibrit', 'Elektrik'], _yakitTipi, (v) => setState(() => _yakitTipi = v)),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionCard() {
+  Widget _buildChoiceRow(List<String> items, String selected, ValueChanged<String> onSelected) {
+    return Row(
+      children: items.map((val) {
+        final isSel = selected == val;
+        return Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ChoiceChip(
+            label: Text(val),
+            selected: isSel,
+            selectedColor: AppColors.burgundyPrimary,
+            backgroundColor: context.surfaceVariantColor,
+            labelStyle: TextStyle(
+              color: isSel ? AppColors.textWhite : context.textSecondaryColor,
+              fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+            ),
+            onSelected: (_) => onSelected(val),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildChoiceWrap(List<String> items, String selected, ValueChanged<String> onSelected) {
+    return Wrap(
+      spacing: 8,
+      children: items.map((val) {
+        final isSel = selected == val;
+        return ChoiceChip(
+          label: Text(val),
+          selected: isSel,
+          selectedColor: AppColors.burgundyPrimary,
+          backgroundColor: context.surfaceVariantColor,
+          labelStyle: TextStyle(
+            color: isSel ? AppColors.textWhite : context.textSecondaryColor,
+            fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+          ),
+          onSelected: (_) => onSelected(val),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildDescriptionCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: LiquidTextField(
@@ -199,7 +224,7 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
         label: 'Açıklama & Donanım Özellikleri',
         hintText: 'Aracın bakımları, teslim şartları, ses sistemi, cam tavan vb.',
         maxLines: 3,
-        validator: (v) => v == null || v.trim().isEmpty ? 'Açıklama boş bırakılamaz' : null,
+        validator: (v) => v == null || v.trim().length < 10 ? 'Açıklama en az 10 karakter olmalıdır' : null,
       ),
     );
   }
@@ -212,8 +237,19 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
     );
   }
 
-  void _aracKaydet() {
+  Future<void> _aracKaydet() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final confirmed = await showLiquidConfirmationDialog(
+      context,
+      title: 'İlanı Yayınla',
+      message:
+          '${_markaCtrl.text.trim()} ${_modelCtrl.text.trim()} aracınız günlük ₺${_fiyatCtrl.text.trim()} bedel ile vitrinde yayınlanacaktır. Onaylıyor musunuz?',
+      confirmText: 'Yayınla',
+      icon: Icons.add_circle_outline_rounded,
+    );
+
+    if (confirmed != true) return;
 
     final user = AppState.userProfile.currentUser.value;
     final yeniArac = AracModel(
@@ -235,13 +271,17 @@ class _AracEklemeEkraniState extends State<AracEklemeEkrani> {
 
     AppState.arac.aracEkle(yeniArac);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: AppColors.burgundyPrimary,
-        content: Text('Araç ilanı başarıyla yayınlandı!', style: TextStyle(color: Colors.white)),
-      ),
+    if (!mounted) return;
+
+    await showLiquidSuccessDialog(
+      context,
+      title: 'İlanınız Yayında!',
+      message:
+          '${_markaCtrl.text.trim()} ${_modelCtrl.text.trim()} başarıyla vitrine eklendi. Diğer kullanıcılar aracınızı kiralayabilir.',
     );
 
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }

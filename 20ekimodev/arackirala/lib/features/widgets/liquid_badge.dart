@@ -23,7 +23,7 @@ class LiquidBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bgColor, borderColor, textColor) = _resolveColors();
+    final (bgColor, borderColor, textColor) = _resolveColors(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -53,31 +53,31 @@ class LiquidBadge extends StatelessWidget {
     );
   }
 
-  (Color, Color, Color) _resolveColors() {
+  (Color, Color, Color) _resolveColors(BuildContext context) {
     switch (type) {
       case LiquidBadgeType.success:
         return (
-          AppColors.success.withValues(alpha: 0.18),
+          AppColors.success.withValues(alpha: context.isDark ? 0.18 : 0.12),
           AppColors.success.withValues(alpha: 0.6),
           AppColors.success,
         );
       case LiquidBadgeType.warning:
         return (
-          AppColors.warning.withValues(alpha: 0.18),
+          AppColors.warning.withValues(alpha: context.isDark ? 0.18 : 0.12),
           AppColors.warning.withValues(alpha: 0.6),
           AppColors.warning,
         );
       case LiquidBadgeType.burgundy:
         return (
-          AppColors.burgundyPrimary.withValues(alpha: 0.25),
+          AppColors.burgundyPrimary.withValues(alpha: context.isDark ? 0.25 : 0.15),
           AppColors.burgundyAccent.withValues(alpha: 0.8),
-          AppColors.textWhite,
+          context.isDark ? AppColors.textWhite : AppColors.burgundyPrimary,
         );
       case LiquidBadgeType.neutral:
         return (
-          AppColors.surfaceVariant.withValues(alpha: 0.5),
-          AppColors.glassBorderLight,
-          AppColors.textSecondary,
+          context.surfaceVariantColor.withValues(alpha: context.isDark ? 0.5 : 0.8),
+          context.glassBorderColor,
+          context.textSecondaryColor,
         );
     }
   }

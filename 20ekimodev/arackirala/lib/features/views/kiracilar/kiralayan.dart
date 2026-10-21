@@ -5,6 +5,7 @@ import '../../controllers/kiraci_controller.dart';
 import '../../widgets/liquid_app_bar.dart';
 import '../../widgets/liquid_badge.dart';
 import '../../widgets/liquid_button.dart';
+import '../../widgets/liquid_dialog.dart';
 import '../../widgets/liquid_glass_card.dart';
 import '../../widgets/liquid_text_field.dart';
 import '../mesajlar/sikayet_ekrani.dart';
@@ -23,7 +24,7 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
     final currentUser = AppState.userProfile.currentUser.value;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: const LiquidAppBar(title: 'Kiralama Geçmişim & Araç Sahipleri'),
       body: ValueListenableBuilder<List<KiralamaKaydi>>(
         valueListenable: AppState.kiraci.kayitlarNotifier,
@@ -31,14 +32,14 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
           final gecmis = AppState.kiraci.getKiralamaGecmisi(currentUser?.id ?? '');
 
           if (gecmis.isEmpty) {
-            return _buildEmptyState();
+            return _buildEmptyState(context);
           }
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: gecmis.length,
             itemBuilder: (context, index) {
-              return _buildKiralamaCard(gecmis[index]);
+              return _buildKiralamaCard(context, gecmis[index]);
             },
           );
         },
@@ -46,39 +47,39 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Center(
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
       child: Text(
         'Henüz bir araç kiralamadınız. Vitrinden hemen kiralayabilirsiniz!',
         textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+        style: TextStyle(color: context.textMutedColor, fontSize: 14),
       ),
     );
   }
 
-  Widget _buildKiralamaCard(KiralamaKaydi kayit) {
+  Widget _buildKiralamaCard(BuildContext context, KiralamaKaydi kayit) {
     return LiquidGlassCard(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildCardHeader(kayit),
+          _buildCardHeader(context, kayit),
           const SizedBox(height: 10),
-          _buildRentalDetails(kayit),
-          const Divider(color: AppColors.glassBorder, height: 20),
-          _buildActionRow(kayit),
+          _buildRentalDetails(context, kayit),
+          Divider(color: context.glassBorderColor, height: 20),
+          _buildActionRow(context, kayit),
         ],
       ),
     );
   }
 
-  Widget _buildCardHeader(KiralamaKaydi kayit) {
+  Widget _buildCardHeader(BuildContext context, KiralamaKaydi kayit) {
     return Row(
       children: [
         CircleAvatar(
-          backgroundColor: AppColors.burgundyPrimary.withValues(alpha: 0.3),
-          child: const Icon(Icons.car_rental_rounded, color: AppColors.textWhite),
+          backgroundColor: AppColors.burgundyPrimary.withValues(alpha: 0.25),
+          child: const Icon(Icons.car_rental_rounded, color: AppColors.burgundyLight),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -87,8 +88,10 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
             children: [
               Text(
                 kayit.aracBilgisi,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: context.textPrimaryColor,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
@@ -96,7 +99,9 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
               const SizedBox(height: 2),
               Text(
                 'Araç Sahibi: ${kayit.kirayaVerenAd}',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: context.textSecondaryColor, fontSize: 12),
               ),
             ],
           ),
@@ -109,24 +114,24 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
     );
   }
 
-  Widget _buildRentalDetails(KiralamaKaydi kayit) {
+  Widget _buildRentalDetails(BuildContext context, KiralamaKaydi kayit) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Kiralama Süresi', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+            Text('Kiralama Süresi', style: TextStyle(color: context.textMutedColor, fontSize: 11)),
             Text(
               '${kayit.baslangicTarihi.day}.${kayit.baslangicTarihi.month} - ${kayit.bitisTarihi.day}.${kayit.bitisTarihi.month}.${kayit.bitisTarihi.year}',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(color: context.textSecondaryColor, fontSize: 13),
             ),
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Text('Ödenen Tutar', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+            Text('Ödenen Tutar', style: TextStyle(color: context.textMutedColor, fontSize: 11)),
             Text(
               '₺${kayit.toplamTutar.toInt()}',
               style: const TextStyle(
@@ -141,7 +146,7 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
     );
   }
 
-  Widget _buildActionRow(KiralamaKaydi kayit) {
+  Widget _buildActionRow(BuildContext context, KiralamaKaydi kayit) {
     return Row(
       children: [
         Expanded(
@@ -155,7 +160,7 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
                   text: 'Araç Sahibini Puanla',
                   icon: Icons.star_outline_rounded,
                   height: 38,
-                  onPressed: () => _showReviewDialog(kayit),
+                  onPressed: () => _showReviewDialog(context, kayit),
                 ),
         ),
         const SizedBox(width: 8),
@@ -179,87 +184,104 @@ class _KiralayanScreenState extends State<KiralayanScreen> {
     );
   }
 
-  void _showReviewDialog(KiralamaKaydi kayit) {
+  void _showReviewDialog(BuildContext context, KiralamaKaydi kayit) {
     double seciliPuan = 5.0;
-    final yorumCtrl = TextEditingController();
+    final reviewFormKey = GlobalKey<FormState>();
+    final yorumCtrl = TextEditingController(text: 'Çok güvenilir ve ilgili bir araç sahibi.');
+    final etiketler = ['Mükemmel Araç', 'Zamanında Teslimat', 'Güvenilir', 'Çok İlgili'];
 
-    showDialog(
+    showLiquidDialog(
       context: context,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return AlertDialog(
-              backgroundColor: AppColors.backgroundSecondary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-                side: const BorderSide(color: AppColors.glassBorder),
-              ),
-              title: Text(
-                '${kayit.kirayaVerenAd} Değerlendir',
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 17),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      final starIndex = index + 1;
-                      return IconButton(
-                        icon: Icon(
-                          starIndex <= seciliPuan ? Icons.star_rounded : Icons.star_border_rounded,
-                          color: AppColors.starActive,
-                          size: 32,
-                        ),
-                        onPressed: () {
-                          setDialogState(() => seciliPuan = starIndex.toDouble());
-                        },
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 12),
-                  LiquidTextField(
-                    controller: yorumCtrl,
-                    label: 'Araç Sahibi Hakkında Yorumunuz',
-                    hintText: 'Araç vaat edildiği gibi miydi, iletişim nasıldı?',
-                    maxLines: 3,
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('İptal', style: TextStyle(color: AppColors.textSecondary)),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.burgundyPrimary),
-                  onPressed: () {
-                    final currentUser = AppState.userProfile.currentUser.value;
-                    AppState.userProfile.addRatingAndReview(
-                      hedefKullaniciId: kayit.kirayaVerenId,
-                      puan: seciliPuan,
-                      yorumMetni: yorumCtrl.text.trim().isEmpty
-                          ? 'Çok güvenilir bir araç sahibi.'
-                          : yorumCtrl.text.trim(),
-                      yorumYapanAd: currentUser?.adSoyad ?? 'Kiracı',
-                      yorumYapanId: currentUser?.id ?? '',
-                    );
-                    AppState.kiraci.markKiralayanPuanladi(kayit.id);
-                    Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: AppColors.burgundyPrimary,
-                        content: Text('Puanınız ve yorumunuz başarıyla kaydedildi!'),
-                      ),
-                    );
-                  },
-                  child: const Text('Gönder', style: TextStyle(color: Colors.white)),
+      title: '${kayit.kirayaVerenAd} Değerlendir',
+      icon: Icons.star_rounded,
+      iconColor: AppColors.starActive,
+      content: StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          return Form(
+            key: reviewFormKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildStarRow(seciliPuan, (p) => setDialogState(() => seciliPuan = p)),
+                const SizedBox(height: 10),
+                _buildTagRow(ctx, etiketler, (t) {
+                  yorumCtrl.text = '${yorumCtrl.text} $t'.trim();
+                }),
+                const SizedBox(height: 12),
+                LiquidTextField(
+                  controller: yorumCtrl,
+                  label: 'Araç Sahibi Hakkında Yorumunuz',
+                  hintText: 'Araç vaat edildiği gibi miydi, iletişim nasıldı?',
+                  maxLines: 3,
+                  validator: (v) => v == null || v.trim().length < 5 ? 'Yorum en az 5 karakter olmalıdır' : null,
                 ),
               ],
+            ),
+          );
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('İptal', style: TextStyle(color: context.textMutedColor)),
+        ),
+        const SizedBox(width: 8),
+        LiquidButton(
+          text: 'Gönder',
+          height: 40,
+          isFullWidth: false,
+          onPressed: () async {
+            if (!reviewFormKey.currentState!.validate()) return;
+            final currentUser = AppState.userProfile.currentUser.value;
+            AppState.userProfile.addRatingAndReview(
+              hedefKullaniciId: kayit.kirayaVerenId,
+              puan: seciliPuan,
+              yorumMetni: yorumCtrl.text.trim(),
+              yorumYapanAd: currentUser?.adSoyad ?? 'Kiracı',
+              yorumYapanId: currentUser?.id ?? '',
+            );
+            AppState.kiraci.markKiralayanPuanladi(kayit.id);
+            Navigator.pop(context);
+            await showLiquidSuccessDialog(
+              context,
+              title: 'Değerlendirme Kaydedildi',
+              message: '${kayit.kirayaVerenAd} hakkındaki puanınız ve yorumunuz başarıyla kaydedildi.',
             );
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStarRow(double seciliPuan, ValueChanged<double> onSelect) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(5, (index) {
+        final starIndex = index + 1;
+        return IconButton(
+          icon: Icon(
+            starIndex <= seciliPuan ? Icons.star_rounded : Icons.star_border_rounded,
+            color: AppColors.starActive,
+            size: 32,
+          ),
+          onPressed: () => onSelect(starIndex.toDouble()),
         );
-      },
+      }),
+    );
+  }
+
+  Widget _buildTagRow(BuildContext context, List<String> etiketler, ValueChanged<String> onTag) {
+    return Wrap(
+      spacing: 6,
+      children: etiketler.map((tag) {
+        return ActionChip(
+          label: Text(tag, style: const TextStyle(fontSize: 11)),
+          backgroundColor: context.surfaceVariantColor,
+          side: BorderSide(color: context.glassBorderColor),
+          onPressed: () => onTag(tag),
+        );
+      }).toList(),
     );
   }
 }

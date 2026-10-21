@@ -16,7 +16,7 @@ class AraclarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: LiquidAppBar(
         title: 'Vites Araç Vitrini',
         actions: [
@@ -44,7 +44,7 @@ class AraclarScreen extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.tune_rounded,
-                color: hasActiveFilter ? AppColors.burgundyLight : AppColors.textPrimary,
+                color: hasActiveFilter ? AppColors.burgundyLight : context.textPrimaryColor,
               ),
               onPressed: () {
                 Navigator.push(
@@ -74,7 +74,7 @@ class AraclarScreen extends StatelessWidget {
 
   Widget _buildAddCarButton(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.textPrimary),
+      icon: Icon(Icons.add_circle_outline_rounded, color: context.textPrimaryColor),
       onPressed: () {
         Navigator.push(
           context,
@@ -97,10 +97,10 @@ class AraclarScreen extends StatelessWidget {
             children: [
               const Icon(Icons.filter_alt, size: 16, color: AppColors.burgundyLight),
               const SizedBox(width: 8),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Filtreler aktif',
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
+                  style: TextStyle(color: context.textPrimaryColor, fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ),
               GestureDetector(
@@ -122,10 +122,10 @@ class AraclarScreen extends StatelessWidget {
       valueListenable: AppState.arac.araclarListesi,
       builder: (context, araclar, _) {
         if (araclar.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
               'Arama kriterlerine uygun araç bulunamadı.',
-              style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+              style: TextStyle(color: context.textMutedColor, fontSize: 14),
             ),
           );
         }
@@ -157,10 +157,10 @@ class AraclarScreen extends StatelessWidget {
         children: [
           _buildCardHeader(arac),
           const SizedBox(height: 12),
-          _buildCarTitle(arac),
+          _buildCarTitle(context, arac),
           const SizedBox(height: 8),
-          _buildSpecsRow(arac),
-          const Divider(color: AppColors.glassBorder, height: 24),
+          _buildSpecsRow(context, arac),
+          Divider(color: context.glassBorderColor, height: 24),
           _buildCardFooter(context, arac),
         ],
       ),
@@ -169,18 +169,24 @@ class AraclarScreen extends StatelessWidget {
 
   Widget _buildCardHeader(AracModel arac) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            const Icon(Icons.location_on_outlined, size: 14, color: AppColors.burgundyLight),
-            const SizedBox(width: 4),
-            Text(
-              arac.sehir,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
-            ),
-          ],
+        Expanded(
+          child: Row(
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: AppColors.burgundyLight),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  arac.sehir,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         LiquidBadge(
           text: arac.kiralandiMi ? 'Kirada (${arac.kiralayanAd ?? 'Kiracı'})' : 'Müsait',
           type: arac.kiralandiMi ? LiquidBadgeType.warning : LiquidBadgeType.success,
@@ -190,20 +196,20 @@ class AraclarScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCarTitle(AracModel arac) {
+  Widget _buildCarTitle(BuildContext context, AracModel arac) {
     return Row(
       children: [
         Container(
           width: 46,
           height: 46,
           decoration: BoxDecoration(
-            color: AppColors.surfaceVariant.withValues(alpha: 0.6),
+            color: context.surfaceVariantColor.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.glassBorder),
+            border: Border.all(color: context.glassBorderColor),
           ),
           child: const Icon(
             Icons.directions_car_rounded,
-            color: AppColors.textWhite,
+            color: AppColors.burgundyLight,
             size: 26,
           ),
         ),
@@ -214,8 +220,8 @@ class AraclarScreen extends StatelessWidget {
             children: [
               Text(
                 '${arac.marka} ${arac.model}',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.textPrimaryColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -223,7 +229,7 @@ class AraclarScreen extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 'Model Yılı: ${arac.yil}',
-                style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                style: TextStyle(color: context.textMutedColor, fontSize: 12),
               ),
             ],
           ),
@@ -240,32 +246,32 @@ class AraclarScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecsRow(AracModel arac) {
+  Widget _buildSpecsRow(BuildContext context, AracModel arac) {
     return Row(
       children: [
-        _buildSpecChip(Icons.settings_suggest_rounded, arac.vitesTipi),
+        _buildSpecChip(context, Icons.settings_suggest_rounded, arac.vitesTipi),
         const SizedBox(width: 8),
-        _buildSpecChip(Icons.local_gas_station_rounded, arac.yakitTipi),
+        _buildSpecChip(context, Icons.local_gas_station_rounded, arac.yakitTipi),
         const Spacer(),
-        const Text('/ gün', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+        Text('/ gün', style: TextStyle(color: context.textMutedColor, fontSize: 12)),
       ],
     );
   }
 
-  Widget _buildSpecChip(IconData icon, String text) {
+  Widget _buildSpecChip(BuildContext context, IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant.withValues(alpha: 0.5),
+        color: context.surfaceVariantColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.glassBorderLight),
+        border: Border.all(color: context.glassBorderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: AppColors.textSecondary),
+          Icon(icon, size: 12, color: context.textSecondaryColor),
           const SizedBox(width: 4),
-          Text(text, style: const TextStyle(color: AppColors.textSecondary, fontSize: 11)),
+          Text(text, style: TextStyle(color: context.textSecondaryColor, fontSize: 11)),
         ],
       ),
     );
@@ -320,7 +326,7 @@ class AraclarScreen extends StatelessWidget {
             Text(
               'İncele',
               style: TextStyle(
-                color: arac.begenildiMi ? AppColors.burgundyLight : AppColors.textPrimary,
+                color: arac.begenildiMi ? AppColors.burgundyLight : context.textPrimaryColor,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -329,7 +335,7 @@ class AraclarScreen extends StatelessWidget {
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 12,
-              color: arac.begenildiMi ? AppColors.burgundyLight : AppColors.textPrimary,
+              color: arac.begenildiMi ? AppColors.burgundyLight : context.textPrimaryColor,
             ),
           ],
         ),

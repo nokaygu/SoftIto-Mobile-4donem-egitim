@@ -139,4 +139,16 @@ class KiraciController {
       kayitlarNotifier.value = List.unmodifiable(_kayitlar);
     }
   }
+
+  /// Aktif kiralamayı bitir / teslim et
+  void kiralamaTamamla(String aracId) {
+    final index = _kayitlar.indexWhere((k) => k.aracId == aracId && k.durum == 'Aktif');
+    if (index != -1) {
+      _kayitlar[index] = _kayitlar[index].copyWith(
+        durum: 'Tamamlandı',
+        bitisTarihi: DateTime.now(),
+      );
+      kayitlarNotifier.value = List.unmodifiable(_kayitlar);
+    }
+  }
 }

@@ -25,81 +25,97 @@ class LiquidButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = customColor ??
-        (isPrimary ? AppColors.burgundyPrimary : Colors.transparent);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final shouldExpand = isFullWidth && constraints.maxWidth.isFinite;
 
-    final buttonDecoration = BoxDecoration(
-      gradient: isPrimary && customColor == null
-          ? const LinearGradient(
-              colors: [
-                AppColors.burgundyAccent,
-                AppColors.burgundyPrimary,
-                AppColors.burgundySecondary,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )
-          : null,
-      color: isPrimary && customColor != null
-          ? effectiveColor
-          : (isPrimary ? null : AppColors.glassSurface),
-      borderRadius: BorderRadius.circular(14),
-      border: Border.all(
-        color: isPrimary
-            ? AppColors.burgundyAccent.withValues(alpha: 0.6)
-            : AppColors.glassBorderLight,
-        width: 1.2,
-      ),
-      boxShadow: isPrimary
-          ? [
-              BoxShadow(
-                color: AppColors.burgundyPrimary.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ]
-          : null,
-    );
+        final effectiveColor = customColor ??
+            (isPrimary ? AppColors.burgundyPrimary : Colors.transparent);
 
-    Widget childWidget = Row(
-      mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (icon != null) ...[
-          Icon(
-            icon,
-            size: 20,
-            color: isPrimary ? AppColors.textWhite : AppColors.textSecondary,
-          ),
-          const SizedBox(width: 8),
-        ],
-        Text(
-          text,
-          style: TextStyle(
-            color: isPrimary ? AppColors.textWhite : AppColors.textPrimary,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-        ),
-      ],
-    );
-
-    return Container(
-      width: isFullWidth ? double.infinity : null,
-      height: height,
-      decoration: buttonDecoration,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+        final buttonDecoration = BoxDecoration(
+          gradient: isPrimary && customColor == null
+              ? const LinearGradient(
+                  colors: [
+                    AppColors.burgundyAccent,
+                    AppColors.burgundyPrimary,
+                    AppColors.burgundySecondary,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isPrimary && customColor != null
+              ? effectiveColor
+              : (isPrimary ? null : context.glassSurfaceColor),
           borderRadius: BorderRadius.circular(14),
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: childWidget,
+          border: Border.all(
+            color: isPrimary
+                ? AppColors.burgundyAccent.withValues(alpha: 0.6)
+                : context.glassBorderColor,
+            width: 1.2,
           ),
-        ),
-      ),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                    color: AppColors.burgundyPrimary.withValues(alpha: 0.35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        );
+
+        final childWidget = Row(
+          mainAxisSize: shouldExpand ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 20,
+                color: isPrimary ? AppColors.textWhite : context.textSecondaryColor,
+              ),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Text(
+                text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isPrimary ? AppColors.textWhite : context.textPrimaryColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+          ],
+        );
+
+        final isEnabled = onPressed != null;
+
+        return Opacity(
+          opacity: isEnabled ? 1.0 : 0.55,
+          child: Container(
+            width: shouldExpand ? double.infinity : null,
+            height: height,
+            decoration: buttonDecoration,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: onPressed,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  child: childWidget,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

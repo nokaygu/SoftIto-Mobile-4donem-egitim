@@ -27,11 +27,11 @@ class LiquidAppBar extends StatelessWidget implements PreferredSizeWidget {
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.backgroundDark.withValues(alpha: 0.75),
+            color: context.scaffoldColor.withValues(alpha: context.isDark ? 0.75 : 0.88),
             border: showBottomBorder
-                ? const Border(
+                ? Border(
                     bottom: BorderSide(
-                      color: AppColors.glassBorder,
+                      color: context.glassBorderColor,
                       width: 1,
                     ),
                   )
@@ -42,11 +42,12 @@ class LiquidAppBar extends StatelessWidget implements PreferredSizeWidget {
             elevation: 0,
             scrolledUnderElevation: 0,
             leading: leading,
+            iconTheme: IconThemeData(color: context.textPrimaryColor),
             centerTitle: true,
             title: Text(
               title,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: context.textPrimaryColor,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,

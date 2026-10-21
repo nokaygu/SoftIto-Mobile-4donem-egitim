@@ -28,7 +28,7 @@ class VitesApp extends StatelessWidget {
           title: 'Vites',
           debugShowCheckedModeBanner: false,
           themeMode: AppState.theme.themeMode,
-          theme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           home: const AuthGate(),
         );
@@ -73,11 +73,12 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     final tabs = _buildTabs(isVeren);
 
     return Scaffold(
+      backgroundColor: context.scaffoldColor,
       body: IndexedStack(
         index: _currentIndex,
         children: tabs,
       ),
-      bottomNavigationBar: _buildBottomNavBar(isVeren),
+      bottomNavigationBar: _buildBottomNavBar(context, isVeren),
     );
   }
 
@@ -92,18 +93,18 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     ];
   }
 
-  Widget _buildBottomNavBar(bool isVeren) {
+  Widget _buildBottomNavBar(BuildContext context, bool isVeren) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.backgroundDark,
-        border: Border(top: BorderSide(color: AppColors.glassBorder, width: 1)),
+      decoration: BoxDecoration(
+        color: context.scaffoldColor,
+        border: Border(top: BorderSide(color: context.glassBorderColor, width: 1)),
       ),
       child: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         backgroundColor: Colors.transparent,
         selectedItemColor: AppColors.burgundyLight,
-        unselectedItemColor: AppColors.textMuted,
+        unselectedItemColor: context.textMutedColor,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
         type: BottomNavigationBarType.fixed,

@@ -4,6 +4,7 @@ import '../../../core/state/app_state.dart';
 import '../../models/mesaj_model.dart';
 import '../../widgets/liquid_app_bar.dart';
 import '../../widgets/liquid_button.dart';
+import '../../widgets/liquid_dialog.dart';
 import '../../widgets/liquid_glass_card.dart';
 import '../../widgets/liquid_text_field.dart';
 
@@ -55,16 +56,16 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: const LiquidAppBar(title: 'Güvenlik & Şikayet Bildir'),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildTargetInfoCard(),
+            _buildTargetInfoCard(context),
             const SizedBox(height: 14),
-            _buildCategorySelectorCard(),
+            _buildCategorySelectorCard(context),
             const SizedBox(height: 14),
             _buildFormCard(),
             const SizedBox(height: 24),
@@ -76,7 +77,7 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
     );
   }
 
-  Widget _buildTargetInfoCard() {
+  Widget _buildTargetInfoCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -94,14 +95,14 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Bildirilen Taraf',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                  style: TextStyle(color: context.textMutedColor, fontSize: 12),
                 ),
                 Text(
                   widget.sikayetEdilenAd ?? 'Sistem Kullanıcısı',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.textPrimaryColor,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
@@ -114,16 +115,16 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
     );
   }
 
-  Widget _buildCategorySelectorCard() {
+  Widget _buildCategorySelectorCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Şikayet Kategorisi',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: context.textPrimaryColor,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -138,9 +139,9 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
                 label: Text(kat),
                 selected: isSel,
                 selectedColor: AppColors.burgundyPrimary,
-                backgroundColor: AppColors.surfaceVariant,
+                backgroundColor: context.surfaceVariantColor,
                 labelStyle: TextStyle(
-                  color: isSel ? AppColors.textWhite : AppColors.textSecondary,
+                  color: isSel ? AppColors.textWhite : context.textSecondaryColor,
                   fontSize: 12,
                   fontWeight: isSel ? FontWeight.w600 : FontWeight.w500,
                 ),
@@ -162,7 +163,8 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
             controller: _baslikCtrl,
             label: 'Şikayet Başlığı',
             hintText: 'Örn: Araç randevu saatinden 2 saat geç teslim edildi',
-            validator: (v) => v == null || v.trim().isEmpty ? 'Başlık zorunludur' : null,
+            validator: (v) =>
+                v == null || v.trim().length < 5 ? 'Şikayet başlığı en az 5 karakter olmalıdır' : null,
           ),
           const SizedBox(height: 14),
           LiquidTextField(
@@ -170,7 +172,8 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
             label: 'Detaylı Açıklama',
             hintText: 'Yaşadığınız sorunu detaylarıyla açıklayınız...',
             maxLines: 4,
-            validator: (v) => v == null || v.trim().isEmpty ? 'Açıklama zorunludur' : null,
+            validator: (v) =>
+                v == null || v.trim().length < 15 ? 'Şikayet açıklaması en az 15 karakter olmalıdır' : null,
           ),
         ],
       ),
@@ -186,8 +189,20 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
     );
   }
 
-  void _sikayetiGonder() {
+  Future<void> _sikayetiGonder() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final confirmed = await showLiquidConfirmationDialog(
+      context,
+      title: 'Şikayeti İlet',
+      message:
+          'Şikayet başvurunuz incelenmek üzere güvenlik ekibimize iletilecektir. Göndermek istediğinize emin misiniz?',
+      confirmText: 'Gönder',
+      isDestructive: true,
+      icon: Icons.shield_outlined,
+    );
+
+    if (confirmed != true) return;
 
     final currentUser = AppState.userProfile.currentUser.value;
     final yeniSikayet = SikayetModel(
@@ -204,13 +219,17 @@ class _SikayetEkraniState extends State<SikayetEkrani> {
 
     AppState.mesaj.sikayetGonder(yeniSikayet);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: AppColors.burgundyPrimary,
-        content: Text('Şikayetiniz kaydedildi ve incelemeye alındı.'),
-      ),
+    if (!mounted) return;
+
+    await showLiquidSuccessDialog(
+      context,
+      title: 'Şikayetiniz Alındı',
+      message:
+          'Başvurunuz (#${yeniSikayet.id}) yetkili birimlerimize iletilmiştir. Güvenliğiniz için inceleme başlatılacaktır.',
     );
 
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }

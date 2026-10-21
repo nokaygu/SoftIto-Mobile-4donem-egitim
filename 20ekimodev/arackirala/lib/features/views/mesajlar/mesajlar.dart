@@ -17,12 +17,12 @@ class MesajlarScreen extends StatelessWidget {
     final user = AppState.userProfile.currentUser.value;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: LiquidAppBar(
         title: 'Mesajlar & İletişim',
         actions: [
           IconButton(
-            icon: const Icon(Icons.shield_outlined, color: AppColors.textSecondary),
+            icon: Icon(Icons.shield_outlined, color: context.textSecondaryColor),
             tooltip: 'Genel Şikayet Bildir',
             onPressed: () {
               Navigator.push(
@@ -39,7 +39,7 @@ class MesajlarScreen extends StatelessWidget {
           final sohbetler = AppState.mesaj.getKullaniciSohbetleri(user?.id ?? '');
 
           if (sohbetler.isEmpty) {
-            return _buildEmptyState();
+            return _buildEmptyState(context);
           }
 
           return ListView.builder(
@@ -54,12 +54,12 @@ class MesajlarScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Center(
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
       child: Text(
         'Henüz bir mesajlaşmanız bulunmuyor.\nAraç detayından araç sahibine mesaj gönderebilirsiniz.',
         textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+        style: TextStyle(color: context.textMutedColor, fontSize: 14),
       ),
     );
   }
@@ -78,8 +78,8 @@ class MesajlarScreen extends StatelessWidget {
         children: [
           _buildAvatar(),
           const SizedBox(width: 12),
-          Expanded(child: _buildChatInfo(sohbet)),
-          _buildTrailing(sohbet),
+          Expanded(child: _buildChatInfo(context, sohbet)),
+          _buildTrailing(context, sohbet),
         ],
       ),
     );
@@ -89,18 +89,20 @@ class MesajlarScreen extends StatelessWidget {
     return CircleAvatar(
       radius: 24,
       backgroundColor: AppColors.burgundyPrimary.withValues(alpha: 0.25),
-      child: const Icon(Icons.person, color: AppColors.textWhite, size: 24),
+      child: const Icon(Icons.person, color: AppColors.burgundyLight, size: 24),
     );
   }
 
-  Widget _buildChatInfo(SohbetModel sohbet) {
+  Widget _buildChatInfo(BuildContext context, SohbetModel sohbet) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           sohbet.digerKullaniciAd,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: context.textPrimaryColor,
             fontSize: 15,
             fontWeight: FontWeight.w700,
           ),
@@ -110,7 +112,7 @@ class MesajlarScreen extends StatelessWidget {
           sohbet.sonMesaj,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          style: TextStyle(color: context.textSecondaryColor, fontSize: 13),
         ),
         if (sohbet.ilgiliAracBilgisi != null) ...[
           const SizedBox(height: 4),
@@ -124,16 +126,16 @@ class MesajlarScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTrailing(SohbetModel sohbet) {
+  Widget _buildTrailing(BuildContext context, SohbetModel sohbet) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           '${sohbet.sonMesajZamani.hour.toString().padLeft(2, '0')}:${sohbet.sonMesajZamani.minute.toString().padLeft(2, '0')}',
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+          style: TextStyle(color: context.textMutedColor, fontSize: 11),
         ),
         const SizedBox(height: 6),
-        const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 20),
+        Icon(Icons.chevron_right_rounded, color: context.textMutedColor, size: 20),
       ],
     );
   }

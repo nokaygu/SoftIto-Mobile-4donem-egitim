@@ -33,13 +33,13 @@ class LiquidGlassCard extends StatelessWidget {
           padding: padding,
           decoration: BoxDecoration(
             color: isHighlighted
-                ? AppColors.burgundyPrimary.withValues(alpha: 0.24)
-                : AppColors.glassSurface,
+                ? AppColors.burgundyPrimary.withValues(alpha: context.isDark ? 0.24 : 0.12)
+                : context.glassSurfaceColor,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
               color: isHighlighted
                   ? AppColors.burgundyAccent.withValues(alpha: 0.8)
-                  : AppColors.glassBorder,
+                  : context.glassBorderColor,
               width: 1.2,
             ),
           ),

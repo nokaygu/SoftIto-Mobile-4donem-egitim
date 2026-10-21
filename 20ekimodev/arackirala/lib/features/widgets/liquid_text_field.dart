@@ -35,8 +35,8 @@ class LiquidTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: context.textSecondaryColor,
             fontSize: 13,
             fontWeight: FontWeight.w600,
           ),
@@ -49,28 +49,29 @@ class LiquidTextField extends StatelessWidget {
           validator: validator,
           onChanged: onChanged,
           maxLines: maxLines,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          style: TextStyle(
+            color: context.textPrimaryColor,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
           cursorColor: AppColors.burgundyAccent,
           decoration: InputDecoration(
             hintText: hintText,
+            hintStyle: TextStyle(color: context.textMutedColor, fontSize: 14),
             prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: AppColors.textSecondary, size: 20)
+                ? Icon(prefixIcon, color: context.textSecondaryColor, size: 20)
                 : null,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: AppColors.glassSurface,
+            fillColor: context.isDark ? AppColors.glassSurfaceDark : AppColors.surfaceLight,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.glassBorder),
+              borderSide: BorderSide(color: context.glassBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.glassBorder),
+              borderSide: BorderSide(color: context.glassBorderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),

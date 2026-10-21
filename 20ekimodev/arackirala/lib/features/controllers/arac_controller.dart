@@ -58,7 +58,7 @@ class AracController {
         ),
       ],
     ),
-    AracModel(
+    const AracModel(
       id: 'arc_3',
       marka: 'Audi',
       model: 'RS6 Avant',
@@ -76,7 +76,7 @@ class AracController {
       sembolikIkon: 'speed',
       yorumlar: [],
     ),
-    AracModel(
+    const AracModel(
       id: 'arc_4',
       marka: 'Porsche',
       model: 'Taycan 4S',
@@ -94,7 +94,7 @@ class AracController {
       sembolikIkon: 'electric_car',
       yorumlar: [],
     ),
-    AracModel(
+    const AracModel(
       id: 'arc_5',
       marka: 'Volvo',
       model: 'XC90 B5 AWD',

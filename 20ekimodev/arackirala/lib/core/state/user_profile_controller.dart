@@ -106,6 +106,24 @@ class UserProfileController {
     currentUser.value = updated;
   }
 
+  /// Profil Bilgilerini Güncelle (Form Yönetimi)
+  void updateProfile({
+    required String adSoyad,
+    required String email,
+    required String telefon,
+  }) {
+    final current = currentUser.value;
+    if (current == null) return;
+
+    final updated = current.copyWith(
+      adSoyad: adSoyad.trim(),
+      email: email.trim(),
+      telefon: telefon.trim(),
+    );
+    _guncelleKullaniciListesi(updated);
+    currentUser.value = updated;
+  }
+
   /// Kullanıcıya puan ve yorum ekle (karşılıklı puanlama)
   void addRatingAndReview({
     required String hedefKullaniciId,

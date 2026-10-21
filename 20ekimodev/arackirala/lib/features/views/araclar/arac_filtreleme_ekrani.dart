@@ -4,6 +4,7 @@ import '../../../core/state/app_state.dart';
 import '../../models/arac_model.dart';
 import '../../widgets/liquid_app_bar.dart';
 import '../../widgets/liquid_button.dart';
+import '../../widgets/liquid_dialog.dart';
 import '../../widgets/liquid_glass_card.dart';
 import '../../widgets/liquid_text_field.dart';
 
@@ -61,7 +62,7 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: context.scaffoldColor,
       appBar: LiquidAppBar(
         title: 'Detaylı Filtreleme',
         actions: [
@@ -79,17 +80,17 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
         children: [
           _buildSearchCard(),
           const SizedBox(height: 14),
-          _buildBrandSelector(),
+          _buildBrandSelector(context),
           const SizedBox(height: 14),
-          _buildYearRangeCard(),
+          _buildYearRangeCard(context),
           const SizedBox(height: 14),
-          _buildPriceRangeCard(),
+          _buildPriceRangeCard(context),
           const SizedBox(height: 14),
-          _buildGearSelector(),
+          _buildGearSelector(context),
           const SizedBox(height: 14),
-          _buildFuelSelector(),
+          _buildFuelSelector(context),
           const SizedBox(height: 14),
-          _buildAvailabilityToggle(),
+          _buildAvailabilityToggle(context),
           const SizedBox(height: 24),
           _buildApplyButton(),
           const SizedBox(height: 20),
@@ -110,15 +111,15 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildBrandSelector() {
+  Widget _buildBrandSelector(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Marka',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Wrap(
@@ -126,12 +127,14 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
             runSpacing: 8,
             children: [
               _buildFilterChip(
+                context: context,
                 label: 'Tümü',
                 isSelected: _seciliMarka == null,
                 onTap: () => setState(() => _seciliMarka = null),
               ),
               ..._markalar.map((marka) {
                 return _buildFilterChip(
+                  context: context,
                   label: marka,
                   isSelected: _seciliMarka == marka,
                   onTap: () => setState(() {
@@ -146,15 +149,15 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildYearRangeCard() {
+  Widget _buildYearRangeCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Model Yılı Aralığı',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Row(
@@ -183,15 +186,15 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildPriceRangeCard() {
+  Widget _buildPriceRangeCard(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Günlük Fiyat Aralığı (TL)',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Row(
@@ -220,27 +223,29 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildGearSelector() {
+  Widget _buildGearSelector(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Vites Tipi',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
             children: [
               _buildFilterChip(
+                context: context,
                 label: 'Tümü',
                 isSelected: _seciliVites == null,
                 onTap: () => setState(() => _seciliVites = null),
               ),
               ..._vitesTipleri.map((vites) {
                 return _buildFilterChip(
+                  context: context,
                   label: vites,
                   isSelected: _seciliVites == vites,
                   onTap: () => setState(() {
@@ -255,15 +260,15 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildFuelSelector() {
+  Widget _buildFuelSelector(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Yakıt Tipi',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Wrap(
@@ -271,12 +276,14 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
             runSpacing: 8,
             children: [
               _buildFilterChip(
+                context: context,
                 label: 'Tümü',
                 isSelected: _seciliYakit == null,
                 onTap: () => setState(() => _seciliYakit = null),
               ),
               ..._yakitTipleri.map((yakit) {
                 return _buildFilterChip(
+                  context: context,
                   label: yakit,
                   isSelected: _seciliYakit == yakit,
                   onTap: () => setState(() {
@@ -291,27 +298,27 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  Widget _buildAvailabilityToggle() {
+  Widget _buildAvailabilityToggle(BuildContext context) {
     return LiquidGlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Sadece Müsait Araçlar',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimaryColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 'Şu an kirada olan araçları gizle',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                style: TextStyle(color: context.textMutedColor, fontSize: 12),
               ),
             ],
           ),
@@ -319,8 +326,8 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
             value: _sadeceMusaitOlanlar,
             activeThumbColor: AppColors.burgundyAccent,
             activeTrackColor: AppColors.burgundyPrimary.withValues(alpha: 0.5),
-            inactiveThumbColor: AppColors.textSecondary,
-            inactiveTrackColor: AppColors.surfaceVariant,
+            inactiveThumbColor: context.textSecondaryColor,
+            inactiveTrackColor: context.surfaceVariantColor,
             onChanged: (val) => setState(() => _sadeceMusaitOlanlar = val),
           ),
         ],
@@ -329,6 +336,7 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
   }
 
   Widget _buildFilterChip({
+    required BuildContext context,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -341,17 +349,17 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.burgundyPrimary
-              : AppColors.surfaceVariant.withValues(alpha: 0.5),
+              : context.surfaceVariantColor.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isSelected ? AppColors.burgundyAccent : AppColors.glassBorder,
+            color: isSelected ? AppColors.burgundyAccent : context.glassBorderColor,
             width: 1.2,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? AppColors.textWhite : AppColors.textSecondary,
+            color: isSelected ? AppColors.textWhite : context.textSecondaryColor,
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
@@ -368,19 +376,44 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
     );
   }
 
-  void _sifirlaFiltre() {
+  Future<void> _sifirlaFiltre() async {
+    final f = AppState.arac.aktifFiltre.value;
+    if (f.isActive) {
+      final confirmed = await showLiquidConfirmationDialog(
+        context,
+        title: 'Filtreleri Sıfırla',
+        message: 'Tüm filtre kriterleri temizlenecektir. Devam etmek istiyor musunuz?',
+        confirmText: 'Sıfırla',
+      );
+      if (confirmed != true) return;
+    }
+
     AppState.arac.filtreSifirla();
-    Navigator.pop(context);
+    if (mounted) Navigator.pop(context);
   }
 
   void _uygulaFiltre() {
+    final minYil = int.tryParse(_minYilCtrl.text.trim());
+    final maxYil = int.tryParse(_maxYilCtrl.text.trim());
+    if (minYil != null && maxYil != null && minYil > maxYil) {
+      _showWarningSnackBar('Minimum model yılı maksimum yıldan büyük olamaz.');
+      return;
+    }
+
+    final minFiyat = double.tryParse(_minFiyatCtrl.text.trim());
+    final maxFiyat = double.tryParse(_maxFiyatCtrl.text.trim());
+    if (minFiyat != null && maxFiyat != null && minFiyat > maxFiyat) {
+      _showWarningSnackBar('Minimum fiyat maksimum fiyattan büyük olamaz.');
+      return;
+    }
+
     final yeniFiltre = AracFiltreModel(
       aramaKelimesi: _aramaCtrl.text.trim().isEmpty ? null : _aramaCtrl.text.trim(),
       seciliMarka: _seciliMarka,
-      minYil: int.tryParse(_minYilCtrl.text.trim()),
-      maxYil: int.tryParse(_maxYilCtrl.text.trim()),
-      minFiyat: double.tryParse(_minFiyatCtrl.text.trim()),
-      maxFiyat: double.tryParse(_maxFiyatCtrl.text.trim()),
+      minYil: minYil,
+      maxYil: maxYil,
+      minFiyat: minFiyat,
+      maxFiyat: maxFiyat,
       vitesTipi: _seciliVites,
       yakitTipi: _seciliYakit,
       sadeceMusaitOlanlar: _sadeceMusaitOlanlar,
@@ -388,5 +421,14 @@ class _AracFiltrelemeEkraniState extends State<AracFiltrelemeEkrani> {
 
     AppState.arac.filtreUygula(yeniFiltre);
     Navigator.pop(context);
+  }
+
+  void _showWarningSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.error,
+        content: Text(message, style: const TextStyle(color: Colors.white)),
+      ),
+    );
   }
 }

@@ -6,6 +6,7 @@ import '../../models/arac_model.dart';
 import '../../widgets/liquid_app_bar.dart';
 import '../../widgets/liquid_badge.dart';
 import '../../widgets/liquid_button.dart';
+import '../../widgets/liquid_dialog.dart';
 import '../../widgets/liquid_glass_card.dart';
 import '../../widgets/liquid_text_field.dart';
 import '../mesajlar/mesaj_detay_ekrani.dart';
@@ -40,7 +41,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
         );
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundDark,
+          backgroundColor: context.scaffoldColor,
           appBar: LiquidAppBar(
             title: '${arac.marka} ${arac.model}',
             actions: [_buildLikeActionButton(arac)],
@@ -48,17 +49,17 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildHeaderImageCard(arac),
+              _buildHeaderImageCard(context, arac),
               const SizedBox(height: 14),
-              _buildOwnerAndStatusCard(arac),
+              _buildOwnerAndStatusCard(context, arac),
               const SizedBox(height: 14),
-              _buildSpecsGrid(arac),
+              _buildSpecsGrid(context, arac),
               const SizedBox(height: 14),
-              _buildDescriptionCard(arac),
+              _buildDescriptionCard(context, arac),
               const SizedBox(height: 14),
-              _buildActionButtons(arac),
+              _buildActionButtons(context, arac),
               const SizedBox(height: 18),
-              _buildCommentsSection(arac),
+              _buildCommentsSection(context, arac),
               const SizedBox(height: 24),
             ],
           ),
@@ -77,7 +78,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildHeaderImageCard(AracModel arac) {
+  Widget _buildHeaderImageCard(BuildContext context, AracModel arac) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(24),
       isHighlighted: arac.begenildiMi,
@@ -87,20 +88,20 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.surfaceVariant.withValues(alpha: 0.6),
-              border: Border.all(color: AppColors.glassBorder),
+              color: context.surfaceVariantColor.withValues(alpha: 0.6),
+              border: Border.all(color: context.glassBorderColor),
             ),
             child: const Icon(
               Icons.directions_car_filled_rounded,
               size: 64,
-              color: AppColors.textWhite,
+              color: AppColors.burgundyLight,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             '${arac.marka} ${arac.model}',
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.textPrimaryColor,
               fontSize: 22,
               fontWeight: FontWeight.w800,
             ),
@@ -111,14 +112,18 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
             children: [
               const Icon(Icons.location_on, size: 14, color: AppColors.burgundyLight),
               const SizedBox(width: 4),
-              Text(
-                arac.sehir,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              Flexible(
+                child: Text(
+                  arac.sehir,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: context.textSecondaryColor, fontSize: 13),
+                ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Text(
                 '• ${arac.begeniSayisi} Beğeni',
-                style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+                style: TextStyle(color: context.textMutedColor, fontSize: 13),
               ),
             ],
           ),
@@ -136,7 +141,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildOwnerAndStatusCard(AracModel arac) {
+  Widget _buildOwnerAndStatusCard(BuildContext context, AracModel arac) {
     final sahibi = AppState.userProfile.getUserById(arac.kirayaVerenId);
     final skor = sahibi?.skor ?? 4.9;
 
@@ -145,9 +150,9 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: AppColors.burgundyPrimary.withValues(alpha: 0.3),
+            backgroundColor: AppColors.burgundyPrimary.withValues(alpha: 0.25),
             radius: 22,
-            child: const Icon(Icons.person, color: AppColors.textWhite),
+            child: const Icon(Icons.person, color: AppColors.burgundyLight),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -156,8 +161,10 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
               children: [
                 Text(
                   arac.kirayaVerenAd,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: context.textPrimaryColor,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
@@ -169,8 +176,8 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
                     const SizedBox(width: 4),
                     Text(
                       '$skor Güven Skoru',
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
+                      style: TextStyle(
+                        color: context.textSecondaryColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -180,6 +187,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
               ],
             ),
           ),
+          const SizedBox(width: 8),
           LiquidBadge(
             text: arac.kiralandiMi ? 'Şu an Kirada' : 'Müsait',
             type: arac.kiralandiMi ? LiquidBadgeType.warning : LiquidBadgeType.success,
@@ -190,7 +198,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildSpecsGrid(AracModel arac) {
+  Widget _buildSpecsGrid(BuildContext context, AracModel arac) {
     final specs = [
       ('Model Yılı', '${arac.yil}', Icons.calendar_today_rounded),
       ('Vites', arac.vitesTipi, Icons.settings_rounded),
@@ -204,21 +212,21 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
-        childAspectRatio: 2.8,
+        childAspectRatio: 2.3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        children: specs.map((spec) => _buildSpecItem(spec.$1, spec.$2, spec.$3)).toList(),
+        children: specs.map((spec) => _buildSpecItem(context, spec.$1, spec.$2, spec.$3)).toList(),
       ),
     );
   }
 
-  Widget _buildSpecItem(String title, String val, IconData icon) {
+  Widget _buildSpecItem(BuildContext context, String title, String val, IconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant.withValues(alpha: 0.4),
+        color: context.surfaceVariantColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: context.glassBorderColor),
       ),
       child: Row(
         children: [
@@ -229,11 +237,11 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(title, style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
+                Text(title, style: TextStyle(color: context.textMutedColor, fontSize: 11)),
                 Text(
                   val,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.textPrimaryColor,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -246,16 +254,16 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildDescriptionCard(AracModel arac) {
+  Widget _buildDescriptionCard(BuildContext context, AracModel arac) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Açıklama',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: context.textPrimaryColor,
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
@@ -263,8 +271,8 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
           const SizedBox(height: 8),
           Text(
             arac.aciklama,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: context.textSecondaryColor,
               fontSize: 13,
               height: 1.4,
             ),
@@ -274,30 +282,209 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildActionButtons(AracModel arac) {
+  Widget _buildActionButtons(BuildContext context, AracModel arac) {
     final user = AppState.userProfile.currentUser.value;
-    final isMyCar = user?.id == arac.kirayaVerenId;
+    final isMyCar = user != null && user.id == arac.kirayaVerenId;
+    final isRentedByMe = user != null && arac.kiralandiMi && arac.kiralayanId == user.id;
+
+    if (isMyCar) {
+      return _buildMyCarActions(context, arac);
+    }
+    if (isRentedByMe) {
+      return _buildRentedByMeActions(context, arac);
+    }
+    return _buildStandardActions(context, arac);
+  }
+
+  Widget _buildMyCarActions(BuildContext context, AracModel arac) {
+    if (arac.kiralandiMi) {
+      return Column(
+        children: [
+          LiquidButton(
+            text: 'Kiracı Bilgileri & Kiralama Durumu',
+            icon: Icons.assignment_turned_in_rounded,
+            isPrimary: true,
+            onPressed: () => _showOwnerRentalInfoDialog(arac),
+          ),
+          const SizedBox(height: 10),
+          LiquidButton(
+            text: 'Kiracıya Mesaj Gönder',
+            icon: Icons.chat_bubble_rounded,
+            isPrimary: false,
+            onPressed: () => _openChatWithTenant(arac),
+          ),
+        ],
+      );
+    }
 
     return Column(
       children: [
         LiquidButton(
-          text: arac.kiralandiMi ? 'Şu An Kirada (${arac.kiralayanAd ?? 'Kiracı'})' : 'Hemen Kirala',
-          icon: arac.kiralandiMi ? Icons.lock : Icons.key_rounded,
-          isPrimary: !arac.kiralandiMi,
-          onPressed: arac.kiralandiMi || isMyCar ? null : () => _showRentDialog(arac),
+          text: 'Bu Sizin İlanınız (Vitrinde Müsait)',
+          icon: Icons.verified_user_rounded,
+          isPrimary: true,
+          onPressed: () => _showOwnCarInfoDialog(context, arac),
+        ),
+        const SizedBox(height: 10),
+        LiquidButton(
+          text: 'İlan Durumunu İncele',
+          icon: Icons.info_outline_rounded,
+          isPrimary: false,
+          onPressed: () => _showOwnCarInfoDialog(context, arac),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRentedByMeActions(BuildContext context, AracModel arac) {
+    return Column(
+      children: [
+        LiquidButton(
+          text: 'Bu Aracı Kiraladınız (Teslim Et)',
+          icon: Icons.key_rounded,
+          isPrimary: true,
+          onPressed: () => _showReturnCarDialog(arac),
         ),
         const SizedBox(height: 10),
         LiquidButton(
           text: 'Araç Sahibine Mesaj Gönder',
           icon: Icons.chat_bubble_outline_rounded,
           isPrimary: false,
-          onPressed: isMyCar ? null : () => _openChatWithHost(arac),
+          onPressed: () => _openChatWithHost(arac),
         ),
       ],
     );
   }
 
-  Widget _buildCommentsSection(AracModel arac) {
+  Widget _buildStandardActions(BuildContext context, AracModel arac) {
+    return Column(
+      children: [
+        LiquidButton(
+          text: arac.kiralandiMi
+              ? 'Şu An Kirada (${arac.kiralayanAd ?? 'Kiracı'})'
+              : 'Hemen Kirala',
+          icon: arac.kiralandiMi ? Icons.lock_clock_rounded : Icons.key_rounded,
+          isPrimary: !arac.kiralandiMi,
+          onPressed: arac.kiralandiMi
+              ? () => _showAlreadyRentedDialog(context, arac)
+              : () => _showRentFormDialog(arac),
+        ),
+        const SizedBox(height: 10),
+        LiquidButton(
+          text: 'Araç Sahibine Mesaj Gönder',
+          icon: Icons.chat_bubble_outline_rounded,
+          isPrimary: false,
+          onPressed: () => _openChatWithHost(arac),
+        ),
+      ],
+    );
+  }
+
+  void _openChatWithTenant(AracModel arac) {
+    final user = AppState.userProfile.currentUser.value;
+    if (user == null || arac.kiralayanId == null) return;
+
+    final sohbet = AppState.mesaj.getOrCreateSohbet(
+      aktifUserId: user.id,
+      digerUserId: arac.kiralayanId!,
+      digerUserAd: arac.kiralayanAd ?? 'Kiracı',
+      digerUserAvatar: 'person',
+      aracBilgisi: '${arac.marka} ${arac.model} (${arac.yil})',
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => MesajDetayEkrani(sohbet: sohbet)),
+    );
+  }
+
+  Future<void> _showReturnCarDialog(AracModel arac) async {
+    final onay = await showLiquidConfirmationDialog(
+      context,
+      title: 'Aracı İade Et',
+      message:
+          '${arac.marka} ${arac.model} aracını teslim etmek ve kiralama sürecini tamamlamak istiyor musunuz?',
+      confirmText: 'Aracı Teslim Et',
+      cancelText: 'Vazgeç',
+    );
+
+    if (onay == true && mounted) {
+      AppState.arac.kiralamaBitir(arac.id);
+      AppState.kiraci.kiralamaTamamla(arac.id);
+
+      await showLiquidSuccessDialog(
+        context,
+        title: 'Araç Teslim Edildi',
+        message: 'Kiralama başarıyla tamamlandı. Aracınız araç sahibine teslim edildi!',
+      );
+    }
+  }
+
+  Future<void> _showOwnerRentalInfoDialog(AracModel arac) async {
+    final onay = await showLiquidConfirmationDialog(
+      context,
+      title: 'Kiralama Durumu',
+      message:
+          'Araç şu anda ${arac.kiralayanAd ?? 'Kiracı'} tarafından kullanılmaktadır.\nAracı teslim alarak kiralamayı sonlandırmak ister misiniz?',
+      confirmText: 'Teslim Al & Bitir',
+      cancelText: 'Kapat',
+    );
+
+    if (onay == true && mounted) {
+      AppState.arac.kiralamaBitir(arac.id);
+      AppState.kiraci.kiralamaTamamla(arac.id);
+
+      await showLiquidSuccessDialog(
+        context,
+        title: 'Araç Teslim Alındı',
+        message: 'Kiralama başarıyla kapatıldı. Araç vitrinde tekrar müsait duruma getirildi.',
+      );
+    }
+  }
+
+  void _showOwnCarInfoDialog(BuildContext context, AracModel arac) {
+    showLiquidDialog(
+      context: context,
+      title: 'Kendi İlanınız',
+      icon: Icons.verified_user_rounded,
+      iconColor: AppColors.burgundyLight,
+      content: Text(
+        'Bu araç (${arac.marka} ${arac.model}) sizin ilanınızdır. Kendi aracınızı kiralayamaz veya kendinize mesaj gönderemezsiniz. İlanınız vitrinde diğer kullanıcıların kiralaması için aktiftir.',
+        style: TextStyle(color: context.textSecondaryColor, fontSize: 14, height: 1.45),
+      ),
+      actions: [
+        LiquidButton(
+          text: 'Tamam',
+          height: 42,
+          isFullWidth: true,
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
+  void _showAlreadyRentedDialog(BuildContext context, AracModel arac) {
+    showLiquidDialog(
+      context: context,
+      title: 'Araç Şu Anda Kirada',
+      icon: Icons.lock_clock_rounded,
+      iconColor: AppColors.warning,
+      content: Text(
+        '${arac.marka} ${arac.model} şu anda ${arac.kiralayanAd ?? 'başka bir kullanıcı'} tarafından kiralanmıştır. Araç teslim edildiğinde tekrar kiralayabilirsiniz. Dilerseniz araç sahibine mesaj atarak müsaitlik tarihi hakkında bilgi alabilirsiniz.',
+        style: TextStyle(color: context.textSecondaryColor, fontSize: 14, height: 1.45),
+      ),
+      actions: [
+        LiquidButton(
+          text: 'Anladım',
+          height: 42,
+          isFullWidth: true,
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCommentsSection(BuildContext context, AracModel arac) {
     return LiquidGlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -308,26 +495,26 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
             children: [
               Text(
                 'Yorumlar (${arac.yorumlar.length})',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.textPrimaryColor,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const Icon(Icons.comment_outlined, size: 18, color: AppColors.textSecondary),
+              Icon(Icons.comment_outlined, size: 18, color: context.textSecondaryColor),
             ],
           ),
           const SizedBox(height: 12),
           if (arac.yorumlar.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 'Henüz yorum yapılmamış. İlk yorumu sen yap!',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                style: TextStyle(color: context.textMutedColor, fontSize: 13),
               ),
             )
           else
-            ...arac.yorumlar.map(_buildSingleCommentItem),
+            ...arac.yorumlar.map((y) => _buildSingleCommentItem(context, y)),
           const SizedBox(height: 12),
           _buildAddCommentInput(arac),
         ],
@@ -335,14 +522,14 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  Widget _buildSingleCommentItem(AracYorumu y) {
+  Widget _buildSingleCommentItem(BuildContext context, AracYorumu y) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant.withValues(alpha: 0.4),
+        color: context.surfaceVariantColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: context.glassBorderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,22 +539,22 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
             children: [
               Text(
                 y.kullaniciAdi,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.textPrimaryColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
                 '${y.tarih.day}.${y.tarih.month}.${y.tarih.year}',
-                style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+                style: TextStyle(color: context.textMutedColor, fontSize: 11),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
             y.yorum,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 12),
           ),
         ],
       ),
@@ -402,7 +589,15 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
 
   void _submitComment(AracModel arac) {
     final text = _yorumCtrl.text.trim();
-    if (text.isEmpty) return;
+    if (text.length < 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: AppColors.burgundyPrimary,
+          content: Text('Lütfen en az 3 karakterden oluşan bir yorum yazınız.'),
+        ),
+      );
+      return;
+    }
 
     final user = AppState.userProfile.currentUser.value;
     final yeniYorum = AracYorumu(
@@ -415,6 +610,7 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
 
     AppState.arac.yorumEkle(arac.id, yeniYorum);
     _yorumCtrl.clear();
+    FocusScope.of(context).unfocus();
   }
 
   void _openChatWithHost(AracModel arac) {
@@ -435,96 +631,153 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
     );
   }
 
-  void _showRentDialog(AracModel arac) {
+  void _showRentFormDialog(AracModel arac) {
+    final user = AppState.userProfile.currentUser.value;
+    final rentFormKey = GlobalKey<FormState>();
+    final surucuCtrl = TextEditingController(text: user?.adSoyad ?? '');
+    final telefonCtrl = TextEditingController(text: user?.telefon ?? '');
     int gunSayisi = 3;
-    showDialog(
+    bool sozlesmeOnaylandi = true;
+
+    showLiquidDialog(
       context: context,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            final toplamTutar = arac.gunlukFiyat * gunSayisi;
-            return AlertDialog(
-              backgroundColor: AppColors.backgroundSecondary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-                side: const BorderSide(color: AppColors.glassBorder),
-              ),
-              title: Text(
-                '${arac.marka} ${arac.model} Kirala',
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 18),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Günlük Ücret: ₺${arac.gunlukFiyat.toInt()}'),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Kiralama Süresi:', style: TextStyle(color: AppColors.textSecondary)),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline, color: AppColors.textWhite),
-                            onPressed: gunSayisi > 1
-                                ? () => setDialogState(() => gunSayisi--)
-                                : null,
-                          ),
-                          Text(
-                            '$gunSayisi Gün',
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add_circle_outline, color: AppColors.textWhite),
-                            onPressed: () => setDialogState(() => gunSayisi++),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Divider(color: AppColors.glassBorder),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Toplam Tutar:', style: TextStyle(color: AppColors.textSecondary)),
-                      Text(
-                        '₺${toplamTutar.toInt()}',
-                        style: const TextStyle(
-                          color: AppColors.burgundyLight,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('İptal', style: TextStyle(color: AppColors.textSecondary)),
+      title: '${arac.marka} ${arac.model} Kirala',
+      icon: Icons.key_rounded,
+      iconColor: AppColors.burgundyLight,
+      content: StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          final toplamTutar = arac.gunlukFiyat * gunSayisi;
+
+          return Form(
+            key: rentFormKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LiquidTextField(
+                  controller: surucuCtrl,
+                  label: 'Sürücü Adı Soyadı',
+                  prefixIcon: Icons.person_outline,
+                  validator: (v) => v == null || v.trim().length < 3 ? 'Ad Soyad en az 3 karakter olmalıdır' : null,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.burgundyPrimary),
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _confirmRent(arac, gunSayisi, toplamTutar);
-                  },
-                  child: const Text('Kiralamayı Onayla', style: TextStyle(color: Colors.white)),
+                const SizedBox(height: 10),
+                LiquidTextField(
+                  controller: telefonCtrl,
+                  label: 'İletişim Numarası',
+                  prefixIcon: Icons.phone_outlined,
+                  keyboardType: TextInputType.phone,
+                  validator: (v) => v == null || v.trim().length < 10 ? 'Geçerli bir telefon giriniz' : null,
                 ),
+                const SizedBox(height: 12),
+                _buildDurationStepper(arac, gunSayisi, (val) => setDialogState(() => gunSayisi = val)),
+                const Divider(height: 20),
+                _buildPriceSummary(ctx, toplamTutar),
+                const SizedBox(height: 8),
+                _buildContractCheckbox(ctx, sozlesmeOnaylandi, (val) => setDialogState(() => sozlesmeOnaylandi = val)),
               ],
-            );
-          },
-        );
-      },
+            ),
+          );
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('İptal', style: TextStyle(color: context.textMutedColor)),
+        ),
+        const SizedBox(width: 8),
+        LiquidButton(
+          text: 'Kiralamayı Onayla',
+          height: 42,
+          isFullWidth: false,
+          onPressed: () => _handleRentSubmit(arac, rentFormKey, sozlesmeOnaylandi, gunSayisi),
+        ),
+      ],
     );
   }
 
-  void _confirmRent(AracModel arac, int gunSayisi, double toplamTutar) {
+  Widget _buildDurationStepper(AracModel arac, int gunSayisi, ValueChanged<int> onChanged) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Kiralama Süresi:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.remove_circle_outline, size: 22),
+              onPressed: gunSayisi > 1 ? () => onChanged(gunSayisi - 1) : null,
+            ),
+            Text(
+              '$gunSayisi Gün',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add_circle_outline, size: 22),
+              onPressed: gunSayisi < 30 ? () => onChanged(gunSayisi + 1) : null,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceSummary(BuildContext context, double toplamTutar) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Toplam Tutar:', style: TextStyle(color: context.textSecondaryColor, fontSize: 14)),
+        Text(
+          '₺${toplamTutar.toInt()}',
+          style: const TextStyle(
+            color: AppColors.burgundyLight,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContractCheckbox(BuildContext context, bool value, ValueChanged<bool> onChanged) {
+    return Row(
+      children: [
+        Checkbox(
+          value: value,
+          activeColor: AppColors.burgundyPrimary,
+          onChanged: (v) => onChanged(v ?? false),
+        ),
+        Expanded(
+          child: Text(
+            'Kiralama ve hasar şartlarını onaylıyorum.',
+            style: TextStyle(color: context.textSecondaryColor, fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleRentSubmit(
+    AracModel arac,
+    GlobalKey<FormState> formKey,
+    bool sozlesmeOnaylandi,
+    int gunSayisi,
+  ) async {
+    if (!formKey.currentState!.validate()) return;
+    if (!sozlesmeOnaylandi) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: AppColors.error,
+          content: Text('Lütfen kiralama şartlarını onaylayınız.'),
+        ),
+      );
+      return;
+    }
+
+    final toplamTutar = arac.gunlukFiyat * gunSayisi;
+    Navigator.pop(context);
+    _confirmRent(arac, gunSayisi, toplamTutar);
+  }
+
+  Future<void> _confirmRent(AracModel arac, int gunSayisi, double toplamTutar) async {
     final user = AppState.userProfile.currentUser.value;
     if (user == null) return;
 
@@ -551,11 +804,11 @@ class _AracDetayEkraniState extends State<AracDetayEkrani> {
 
       AppState.kiraci.yeniKiralamaEkle(kayit);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColors.burgundyPrimary,
-          content: Text('${arac.marka} başarıyla kiralandı!'),
-        ),
+      await showLiquidSuccessDialog(
+        context,
+        title: 'Kiralama Başarılı!',
+        message:
+            '${arac.marka} ${arac.model} aracı $gunSayisi günlüğüne başarıyla kiralandı.\nToplam Ödenen: ₺${toplamTutar.toInt()}',
       );
     }
   }

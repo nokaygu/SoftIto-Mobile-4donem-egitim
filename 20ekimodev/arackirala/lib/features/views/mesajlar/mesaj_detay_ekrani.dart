@@ -38,14 +38,14 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
         );
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundDark,
+          backgroundColor: context.scaffoldColor,
           appBar: _buildAppBar(guncelSohbet),
           body: Column(
             children: [
               if (guncelSohbet.ilgiliAracBilgisi != null)
-                _buildVehicleHeaderBanner(guncelSohbet.ilgiliAracBilgisi!),
+                _buildVehicleHeaderBanner(context, guncelSohbet.ilgiliAracBilgisi!),
               Expanded(child: _buildMessagesList(guncelSohbet)),
-              _buildInputArea(guncelSohbet),
+              _buildInputArea(context, guncelSohbet),
             ],
           ),
         );
@@ -62,7 +62,7 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
       title: sohbet.digerKullaniciAd,
       actions: [
         IconButton(
-          icon: const Icon(Icons.report_gmailerrorred_outlined, color: AppColors.textSecondary),
+          icon: const Icon(Icons.report_gmailerrorred_outlined, color: AppColors.error),
           tooltip: 'Şikayet Bildir',
           onPressed: () {
             Navigator.push(
@@ -80,13 +80,13 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
     );
   }
 
-  Widget _buildVehicleHeaderBanner(String aracBilgisi) {
+  Widget _buildVehicleHeaderBanner(BuildContext context, String aracBilgisi) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceVariant,
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        color: context.surfaceVariantColor,
+        border: Border(bottom: BorderSide(color: context.glassBorderColor)),
       ),
       child: Row(
         children: [
@@ -95,7 +95,7 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
           Expanded(
             child: Text(
               'İlgili Araç: $aracBilgisi',
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.w600),
+              style: TextStyle(color: context.textPrimaryColor, fontSize: 12, fontWeight: FontWeight.w600),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -130,7 +130,7 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isMe ? AppColors.burgundyPrimary : AppColors.surfaceVariant,
+          color: isMe ? AppColors.burgundyPrimary : context.surfaceVariantColor,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
@@ -138,7 +138,7 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
             bottomRight: Radius.circular(isMe ? 4 : 16),
           ),
           border: Border.all(
-            color: isMe ? AppColors.burgundyAccent : AppColors.glassBorder,
+            color: isMe ? AppColors.burgundyAccent : context.glassBorderColor,
             width: 1,
           ),
           boxShadow: isMe
@@ -156,8 +156,8 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
           children: [
             Text(
               msg.metin,
-              style: const TextStyle(
-                color: AppColors.textWhite,
+              style: TextStyle(
+                color: isMe ? AppColors.textWhite : context.textPrimaryColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -185,12 +185,12 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
     );
   }
 
-  Widget _buildInputArea(SohbetModel sohbet) {
+  Widget _buildInputArea(BuildContext context, SohbetModel sohbet) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.backgroundSecondary,
-        border: Border(top: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        border: Border(top: BorderSide(color: context.glassBorderColor)),
       ),
       child: SafeArea(
         top: false,
@@ -199,18 +199,18 @@ class _MesajDetayEkraniState extends State<MesajDetayEkrani> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant.withValues(alpha: 0.6),
+                  color: context.surfaceVariantColor.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.glassBorder),
+                  border: Border.all(color: context.glassBorderColor),
                 ),
                 child: TextField(
                   controller: _textCtrl,
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                  style: TextStyle(color: context.textPrimaryColor, fontSize: 14),
                   cursorColor: AppColors.burgundyAccent,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Mesajınızı yazın...',
-                    hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    hintStyle: TextStyle(color: context.textMutedColor, fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,

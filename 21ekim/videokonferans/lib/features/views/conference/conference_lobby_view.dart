@@ -18,7 +18,7 @@ class ConferenceLobbyView extends StatefulWidget {
 }
 
 class _ConferenceLobbyViewState extends State<ConferenceLobbyView> {
-  final TextEditingController _channelController = TextEditingController(text: 'vizyon_demo');
+  final TextEditingController _channelController = TextEditingController(text: 'deneme');
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   int _selectedTab = 0; // 0: Açık Odalar, 1: Özel Kanal / Kod
@@ -46,12 +46,27 @@ class _ConferenceLobbyViewState extends State<ConferenceLobbyView> {
 
     final user = AppState.auth.currentUser.value;
     if (user != null) {
-      await AppState.conference.joinChannel(
+      final success = await AppState.conference.joinChannel(
         channelName: channel,
         username: user.username,
         displayName: user.displayName,
         avatarId: user.avatarId,
       );
+
+      if (!success) {
+        setState(() => _isLoading = false);
+        if (mounted) {
+          final err = AppState.conference.lastError.value ?? 'Odaya katılırken bir hata oluştu.';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red.shade800,
+              content: Text(err),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+        return;
+      }
 
       if (_startWithMicMuted && !AppState.conference.isMicMuted.value) {
         await AppState.conference.toggleMic();
@@ -398,7 +413,7 @@ class _ConferenceLobbyViewState extends State<ConferenceLobbyView> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: room.channelName == 'vizyon_demo'
+          color: room.channelName == 'deneme'
               ? theme.primary.withValues(alpha: 0.5)
               : Colors.transparent,
           width: 1.5,

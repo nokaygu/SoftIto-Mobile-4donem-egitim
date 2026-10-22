@@ -22,7 +22,8 @@ class _FriendsViewState extends State<FriendsView> {
     final user = AppState.auth.currentUser.value;
     if (user == null) return;
 
-    final roomName = 'call_${user.username}_${friend.username}';
+    final sortedUsers = <String>[user.username, friend.username]..sort();
+    final roomName = 'call_${sortedUsers[0]}_${sortedUsers[1]}';
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

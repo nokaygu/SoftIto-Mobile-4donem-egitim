@@ -177,7 +177,20 @@ class _ConferenceRoomViewState extends State<ConferenceRoomView> {
                                 isChatOpen: _isChatOpen,
                                 onToggleMic: () => AppState.conference.toggleMic(),
                                 onToggleCamera: () => AppState.conference.toggleCamera(),
-                                onSwitchCamera: () => AppState.conference.switchCamera(),
+                                onSwitchCamera: () {
+                                  if (defaultTargetPlatform == TargetPlatform.macOS ||
+                                      defaultTargetPlatform == TargetPlatform.windows ||
+                                      defaultTargetPlatform == TargetPlatform.linux) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Masaüstü cihazlarda ön/arka kamera değişimi bulunmamaktadır.'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  } else {
+                                    AppState.conference.switchCamera();
+                                  }
+                                },
                                 onToggleChat: () => setState(() => _isChatOpen = !_isChatOpen),
                                 onLeaveCall: _handleLeaveCall,
                               );
@@ -231,6 +244,34 @@ class _ConferenceRoomViewState extends State<ConferenceRoomView> {
                     return Text(
                       '$total ${AppState.language.text('connected_users')}',
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 11),
+                    );
+                  },
+                ),
+                ValueListenableBuilder<String?>(
+                  valueListenable: AppState.conference.connectionStatusMessage,
+                  builder: (context, msg, _) {
+                    if (msg == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: Text(
+                        msg,
+                        style: const TextStyle(color: Colors.amberAccent, fontSize: 10, fontWeight: FontWeight.w600),
+                      ),
+                    );
+                  },
+                ),
+                ValueListenableBuilder<String?>(
+                  valueListenable: AppState.conference.lastError,
+                  builder: (context, err, _) {
+                    if (err == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: Text(
+                        err,
+                        style: const TextStyle(color: Colors.redAccent, fontSize: 10, fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     );
                   },
                 ),
@@ -321,19 +362,36 @@ class _ConferenceRoomViewState extends State<ConferenceRoomView> {
               } else {
                 // Uzak Katılımcı
                 final remoteUid = remoteUids[index - 1];
-                final friend = AppState.friends.friends.value.firstWhere(
-                  (f) => f.username == 'veli' || f.username == 'ayse',
-                  orElse: () => AppState.friends.friends.value.first,
-                );
+                return ValueListenableBuilder<Map<int, Map<String, dynamic>>>(
+                  valueListenable: AppState.conference.remoteUserProfiles,
+                  builder: (context, profiles, _) {
+                    final profile = profiles[remoteUid];
+                    final currentUsername = currentUser?.username ?? 'ali';
+                    // Akıllı fallback: Mac'te ali ise remote veli; Mac'te veli ise remote ali
+                    final defaultFriend = currentUsername == 'ali'
+                        ? AppState.friends.friends.value.firstWhere(
+                            (f) => f.username == 'veli',
+                            orElse: () => AppState.friends.friends.value.first,
+                          )
+                        : AppState.friends.friends.value.firstWhere(
+                            (f) => f.username == 'ali',
+                            orElse: () => AppState.friends.friends.value.first,
+                          );
 
-                return VideoGridTile(
-                  uid: remoteUid,
-                  username: friend.username,
-                  displayName: friend.displayName,
-                  avatarId: friend.avatarId,
-                  isLocal: false,
-                  isCameraOff: false,
-                  isMuted: false,
+                    final displayName = profile?['displayName'] as String? ?? defaultFriend.displayName;
+                    final username = profile?['username'] as String? ?? defaultFriend.username;
+                    final avatarId = profile?['avatarId'] as int? ?? defaultFriend.avatarId;
+
+                    return VideoGridTile(
+                      uid: remoteUid,
+                      username: username,
+                      displayName: displayName,
+                      avatarId: avatarId,
+                      isLocal: false,
+                      isCameraOff: false,
+                      isMuted: false,
+                    );
+                  },
                 );
               }
             },

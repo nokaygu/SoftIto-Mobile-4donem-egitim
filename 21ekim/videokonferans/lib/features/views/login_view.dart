@@ -17,7 +17,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _quickRoomController = TextEditingController(text: 'vizyon_demo');
+  final TextEditingController _quickRoomController = TextEditingController(text: 'deneme');
   String? _errorMessage;
 
   @override
@@ -62,12 +62,26 @@ class _LoginViewState extends State<LoginView> {
     }
 
     final user = AppState.auth.currentUser.value!;
-    await AppState.conference.joinChannel(
+    final success = await AppState.conference.joinChannel(
       channelName: room,
       username: user.username,
       displayName: user.displayName,
       avatarId: user.avatarId,
     );
+
+    if (!success) {
+      if (mounted) {
+        final err = AppState.conference.lastError.value ?? 'Odaya katılırken bir hata oluştu.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red.shade800,
+            content: Text(err),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+      return;
+    }
 
     if (mounted) {
       await Navigator.push<void>(
@@ -317,10 +331,10 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   ActionChip(
                     avatar: const Icon(Icons.flash_on_rounded, size: 14, color: Colors.amber),
-                    label: const Text('#vizyon_demo', style: TextStyle(fontSize: 12)),
+                    label: const Text('#deneme', style: TextStyle(fontSize: 12)),
                     backgroundColor: theme.card,
                     onPressed: () {
-                      _quickRoomController.text = 'vizyon_demo';
+                      _quickRoomController.text = 'deneme';
                       _handleQuickRoomJoin();
                     },
                   ),

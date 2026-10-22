@@ -8,8 +8,8 @@ class RoomsController {
       ValueNotifier<List<MeetingRoomModel>>([
     MeetingRoomModel(
       id: 'room-demo',
-      channelName: 'vizyon_demo',
-      title: 'Vizyon Açık Demo Odası',
+      channelName: 'deneme',
+      title: 'Vizyon Test Odası (deneme)',
       description: 'Herkese açık genel sesli ve görüntülü test odası. Ali ve Veli burada buluşabilir.',
       hostUsername: 'ali',
       hostDisplayName: 'Ali Yılmaz',
@@ -61,7 +61,7 @@ class RoomsController {
   ]);
 
   final ValueNotifier<List<String>> recentRooms =
-      ValueNotifier<List<String>>(<String>['vizyon_demo', 'yazilim_ekibi']);
+      ValueNotifier<List<String>>(<String>['deneme', 'yazilim_ekibi']);
 
   /// Kullanıcı bir odaya katıldığında odayı aktif listeye ekler veya günceller
   void recordRoomJoin({

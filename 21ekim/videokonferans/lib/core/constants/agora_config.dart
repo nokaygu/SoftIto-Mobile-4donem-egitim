@@ -2,12 +2,13 @@
 class AgoraConfig {
   AgoraConfig._();
 
-  /// Agora Proje App ID (Testing Mode)
-  static const String appId = '7aad306718aa4fe1a09d2c2f9ba68136';
+  /// Agora Proje App ID (Token ile eşleşen App ID)
+  static const String appId = '5cd255523c5543859f519ae66310d722';
 
-  /// Testing mode (App ID Only) olduğu için token boş string olarak kullanılır.
-  static const String token = '';
+  /// Agora Geçici RTC Token (deneme kanalı için)
+  static const String token =
+      '007eJxTYLj4MZ9pujWTwfkfcdNW7RMru/rOYHH07EPqWptu/Djfv99PgcE0OcXI1NTUyDjZ1NTE2MLUMs3U0DIx1czM2NAgxdzIKHj9zayGQEYGqw1rGJgYGMEQxGdjSEnNS81NZYCKgsRYGAwNDAwBHiojHQ==';
 
-  /// Varsayılan kanal adı
-  static const String defaultChannel = 'vizyon_demo';
+  /// Varsayılan kanal adı (Token bu kanal adı için üretilmiştir)
+  static const String defaultChannel = 'deneme';
 }

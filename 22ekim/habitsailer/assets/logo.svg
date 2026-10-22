@@ -1,0 +1,13 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Açık Deniz / Bebek Mavisi Dairesel Rozet -->
+  <circle cx="120" cy="120" r="110" fill="#E0F4FF" stroke="#38BDF8" stroke-width="6"/>
+  <circle cx="120" cy="120" r="96" fill="#0284C7"/>
+  <!-- Yelkenler (Bebek Mavisi ve Beyaz) -->
+  <path d="M122 38L122 145L182 145L122 38Z" fill="#E0F2FE"/>
+  <path d="M114 55L114 145L62 145L114 55Z" fill="#7DD3FC"/>
+  <!-- Açık Sarı Şimşek (Zinciri Kırma Enerjisi) -->
+  <path d="M132 72L112 106H130L118 136L148 98H128L132 72Z" fill="#FDE047"/>
+  <!-- Gövde ve Deniz Dalgaları -->
+  <path d="M56 154H184L166 178H74L56 154Z" fill="#0F172A"/>
+  <path d="M40 184C65 172 90 196 120 184C150 172 175 196 200 184" stroke="#FDE047" stroke-width="6" stroke-linecap="round"/>
+</svg>

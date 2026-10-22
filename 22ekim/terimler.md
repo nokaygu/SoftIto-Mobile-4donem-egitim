@@ -37,3 +37,122 @@ Kural: içinde doğrudan BuildContext ile Navigator çağrılmaz çünkü widget
 didChangeDependencies()
 Ne zaman çalışır: initState()'ten hemen sonra ve widget dinlendiği bir (örnek : Theme.of(context)) değiştiğinde otomatik tetikler.
 Ne yapar : BuildContext güvenli bir şekilde erişerek tema ve ya ekran boyutu bağımlılıkları ile ilgili ilk yüklemeler burada yapılır.
+
+build(BuildContext context)
+Ne zaman çalışır : Sayfa ilk açıldığında, setState() çağrıldığında veya üst widget yeni bir inşa ağaç boyama geldiğinde saniyesinde defalarca çalışır.
+Kural: build() metodu tamamen saf olmalıdır. Asla içinde setState() api isteği ya da controller başlatma yapılmamalıdır. Sadece UI döndürülmelidir.
+
+dispose()
+Ne zaman çalışır: widget hafızadan atılmadan hemen önce son bir kez çalışır
+ne yapılır \_controller.dispose() stream dinleyicilerin iptalleri burada yapılır. super.dispose() un mutlaka son satırda çalıştırılması gerekir.
+
+setState((){})
+
+1. arka planda ne yapar: State'in bağlı olduğu StatefulElement nesnesine "ben değiştim, build et" sinyali yollar.
+
+2) nerede kullanılır: Sayfa genelini çizdirmez. Sadece onu dinleyen küçük ValueListenableBuilder'a sinyal gönderir.
+
+ValueNotifier<T>
+
+1. arkada planda ne iş yapar: ChangeNotifier sınıfından türer . Belleğinde tek bir nesne referansı tutar. (T \_value)
+2. Tetikleme: Değer atandığında(set value (T value)), eğer yeni değer eski değere eşit değilse (\_value!=newValue), kayıtlı olan fonksioynu çağrılır.(addListener((){})
+
+InheritedWidget
+1)ne yapar: Widget ağacında alttaki childların, aradaki onlara widgeti bypas ederek, üst widgetin verisine (state'ine) doğrudan erişmesini sağlayan soyut bir widgettir.
+
+Material 3 Tasarım dili renk algoritması ve temalar
+
+primary:Ana marka rengi
+onPrimary:Ana rengin üstüne yazılacak yazı rengi (okunulabilirlik açısından)
+primaryContainer:Anarengin yumuşak pastel arkaplan tonu
+onPrimaryContainer: Ana rengin yumuşak pastel arkaplan tonunun üstüne yazılacak yazı (okunabilirlik açıısndan)
+surface:Sayfa arka plan yuvali
+onSurface: Sayfa üstündeki ana metin rengi
+outLineVariant: İnce sınır ve ayrım çizgilerinin rengi.
+
+ThemeMode.system
+color: Colors.black.withOpacity(186)// kesinlikle 1 ila 255 sayıları arasında tam sayı olarak girilmelidir. **bu kullanım güncelde istemiyor**
+
+color:Colors.black.withValues(alpha: 186/255)//double sayı oolarak girilmelidir **Güncel ve doğru yöntem**
+
+Expanded ve flexible
+Expanded: Kalan bol alanın TAMAMINI kaplamaya zorlar.
+Flexible: Kalan bol alanı paylaştırır. (flex: 1, flex:2)
+Flex:yan yana iki expanded varsa birine flex2 diperine flex1 verir bu sayede ekran boyutuna göre otomatik olarak ayarlar.
+
+Stack ve positioned .
+Ne yapar: Widget'ları z ekseninde üst üste bindirir
+Positioned: Yanlızca bir stack içinde çalışır.
+top: 10 , right: 10 vererek bir resmin sağ üst köşesine bildirim rozeti eklemenizi sağlar.
+
+ListView.builder,
+Klasik ListView(children:[...],) içindeki örnek vermek gerekirse 10.000 elemanın tamamını daha sayfa açılmadan belleğe yüklser ve doğal olarak telefon doonar.
+ListView.builder ise Geri Dönüşümlü Görünüm alanı mnatığını kullanarak ekranda sadece o an eğer 5 kart görünecek ise sadece 5 kartı ram belleğe yükler. Kullanıcı aşağıya kaydıkça yukarda kalanlar bellekten düşürülüp altta kaalnlar belleğe taze olarak yeni üretilir.
+
+shrinkWrap: true
+Bir ListView başka bir dikey kaydırıcının (singleChildScrollview) içine konursa Vertical viewport hatası verir
+shrinkWrap true verilerek bu çözülebilir ancak: ListView'ın sonsuza kayma (infinite scroll) özelliği devre dışı kalır.
+** sadece 3 5 elemanınız varsa bunu kullanmalısınız**
+
+Inkwell ve GestureDetector
+GestureDetector: Tıklama çift tıklama sürükleme olaylarını yakalar ama GÖRSEL HİÇ Bir tepki vermez.
+Inkwell tıklandığı an parmağın altından dışa doğru yayılan bir su dalgası efekti verir.
+
+Önemlki Kuralı: Inkwellin arkasında mutlaka bir material widget olmak zorundadır. AKsi taktirde su dalgas arkadaki tuvali görmediği için hiçbir şekilde görünmez.
+
+Form mimarisi
+
+GlobalKey<FormState>
+
+Widget içindeki Form düğümüne doğrudan dışarıdn erişilemiyor. Bu yüzden widgetin en üstüne koyduğumuz GlobalKey değişkeni sayesinde formun Validate(geçerli) durumunu ve içindeki değerleri (değişkenleri) dışarıdan okuyoruz.
+
+\_formKey.currentState?.validate() çağrıldığında o formun altındaki tüm TextFromFiled validator bloklarını sırayla çalıştırır.
+
+Validator: (String? value)
+fonksiyonda bir hata bulursa geriye String olarak hata metni gönderir.
+Bu metnin otomatik olarak kırmızı renkte ve inputun altında belirir.
+Eğer veri geçerliyse null döner. Flutter için bu alanda hata yok demektir. Null gelmesi
+
+Animasyon motoru
+AnimateContainer: genişlik yükseklik padding margin border renk ve gölge oynatır
+AnimatedOpacity: görünürlüğü 0.0 ile 1.0 arasında yumuşakça soldurur
+AnimatedScale: Widget merkezinden dışarıya doğru büyütüp küçültür
+AnimatedAlign: widget kutunun içinde sağdan sola yukardan aşağıya karşı konumunu değiştirir.
+
+Curves
+İvmelenme Karakterleri
+
+Curves.linear:Sabit hız (robotik hareketler)
+Curves.easeInout: Yavaş Başlar ortada hızlanır yavaşça durur
+Curves.bounceOut: Hedefe çarptığında top gibi 2 3 kez yaylanarak seker
+Curves.elasticOut:Lastik gibi ileri geri titreyerek yerine oturur.
+
+Gorouter
+
+context.go('/profil'); route yönlendirmesidir. Rota tablosunda hiyerarşiyi takip eder. Sayfayı temizleyebilir.
+
+context.push('/profil/5'); Stack yönlendirmesidir. Kullanıcı nereden gelirse gelsin mevcut sayfanın tepesine yeni bir katman ekler ve dönüş sayfası için bir geri ok butonu ekler.
+
+context.pop() sayfanın en üstteki yığınını kapatır.
+
+state.pathParameters["id"]: Gorouter içincde tanımladığımız /:id yapılarına erişmek için kullanılır.
+
+/profil?user=berat
+state.uri.queryParameters["user"]:Opsiyonel filtreleme ya da arama zamanlarında kullanılır.
+
+Cihaz içi yerel depolama mimarileri
+
+SharedPreferences:
+Küçük kullanııc ayaarları
+Düşük Güvenilrilik
+Okuma yazma hızları: okuma hızı orta / yazma hızı yavaş
+
+FlutterSecureStprage
+Şİfre token vb saklama
+En yüksek güvence
+Orta
+
+Hive/Isar:
+Yüksek performanslı nsene depolama
+Orta(isteğe bağlı şifreleme açılabilir.)
+Aşırı hıızlı

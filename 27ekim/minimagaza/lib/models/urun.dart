@@ -1,5 +1,7 @@
 import "kategori.dart";
 
+import 'dart:math';
+
 class Urun {
   final int id;
   final String baslik;
@@ -10,18 +12,18 @@ class Urun {
   final int stokAdedi;
   final bool favoriMi;
 
-  const Urun({
+  Urun({
     required this.id,
     required this.baslik,
     required this.aciklama,
     required this.fiyat,
-    required this.resimUrl,
+    this.resimUrl = "https://picsum.photos/${Random().nextInt(900)}/400",
     required this.kategori,
     required this.stokAdedi,
     this.favoriMi = false,
   });
 
-  Urun copywith({
+  Urun copyWith({
     int? id,
     String? baslik,
     String? aciklama,

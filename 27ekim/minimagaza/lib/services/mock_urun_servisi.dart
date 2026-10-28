@@ -1,15 +1,19 @@
+import 'dart:math';
+
 import '../models/kategori.dart';
 import '../models/urun.dart';
 import 'i_urun_servisi.dart';
 
 class MockUrunServisi implements IUrunServisi {
-  final List<Urun> _urunDeposu = const [
+  final random = Random();
+
+  late final List<Urun> _urunDeposu = [
     Urun(
       id: 1,
       baslik: 'Macbook m5 pro laptop',
       aciklama: 'Güçlü işlemci ve harika ekran',
       fiyat: 179999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.elektronik,
       stokAdedi: 5,
     ),
@@ -18,7 +22,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: "Apple Iphone 18 Pro MAax",
       aciklama: "iphone 17 pro max tıpkı iphone 17 gibi",
       fiyat: 179999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.elektronik,
       stokAdedi: 14,
     ),
@@ -27,7 +31,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: "Erkek L Gömlek",
       aciklama: "Kısa kollu",
       fiyat: 299.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.giyim,
       stokAdedi: 5,
     ),
@@ -36,7 +40,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'Macbook m5 pro laptop',
       aciklama: 'Güçlü işlemci ve harika ekran',
       fiyat: 179999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.elektronik,
       stokAdedi: 5,
     ),
@@ -45,7 +49,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'kadın spor ayakkabı',
       aciklama: 'şık ve rahat',
       fiyat: 1799.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.ayakkabi,
       stokAdedi: 52,
     ),
@@ -54,7 +58,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'erkek spor ayakkabı',
       aciklama: 'şık ve rahat',
       fiyat: 1999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.ayakkabi,
       stokAdedi: 35,
     ),
@@ -63,7 +67,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'saat',
       aciklama: 'şık ve rahat',
       fiyat: 999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.ayakkabi,
       stokAdedi: 35,
     ),
@@ -72,7 +76,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'güneş gözlüğü',
       aciklama: 'şık ve güneşten korur',
       fiyat: 499.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.giyim,
       stokAdedi: 12,
     ),
@@ -81,7 +85,7 @@ class MockUrunServisi implements IUrunServisi {
       baslik: 'smart kol saati',
       aciklama: 'adım sayar ve telefon görüşmesi özelliği',
       fiyat: 2999.99,
-      resimUrl: "https://picsum.photos/400/400",
+      resimUrl: "https://picsum.photos/${random.nextInt(900)}/400",
       kategori: Kategori.giyim,
       stokAdedi: 24,
     ),

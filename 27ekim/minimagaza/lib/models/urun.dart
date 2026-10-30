@@ -1,6 +1,7 @@
-import "kategori.dart";
+import 'package:flutter/foundation.dart';
 
-import 'dart:math';
+import "kategori.dart";
+import 'degerlendirme.dart';
 
 class Urun {
   final int id;
@@ -10,18 +11,36 @@ class Urun {
   final String resimUrl;
   final Kategori kategori;
   final int stokAdedi;
+  final Degerlendirme degerlendirme;
   final bool favoriMi;
 
-  Urun({
+  const Urun({
     required this.id,
     required this.baslik,
     required this.aciklama,
     required this.fiyat,
-    this.resimUrl = "https://picsum.photos/${Random().nextInt(900)}/400",
+    required this.resimUrl,
     required this.kategori,
     required this.stokAdedi,
+    required this.degerlendirme,
     this.favoriMi = false,
   });
+
+  factory Urun.fromJson(Map<String, dynamic> json) {
+    return Urun(
+      id: json['id'] as int,
+      baslik: json['title'] as String,
+      fiyat: (json['price'] as num).toDouble(),
+      aciklama: json['description'] as String,
+      kategori: Kategori.fromApi(json['category'] as String) ?? Kategori.hepsi,
+      resimUrl: json['image'] as String,
+      degerlendirme: Degerlendirme.fromJson(
+        json['rating'] as Map<String, dynamic>,
+      ),
+      stokAdedi: json['count'] as int? ?? 10,
+      favoriMi: json['favoriMi'] as bool? ?? false,
+    );
+  }
 
   Urun copyWith({
     int? id,
@@ -31,6 +50,7 @@ class Urun {
     String? resimUrl,
     Kategori? kategori,
     int? stokAdedi,
+    Degerlendirme? degerlendirme,
     bool? favoriMi,
   }) {
     return Urun(
@@ -41,6 +61,7 @@ class Urun {
       resimUrl: resimUrl ?? this.resimUrl,
       kategori: kategori ?? this.kategori,
       stokAdedi: stokAdedi ?? this.stokAdedi,
+      degerlendirme: degerlendirme ?? this.degerlendirme,
       favoriMi: favoriMi ?? this.favoriMi,
     );
   }

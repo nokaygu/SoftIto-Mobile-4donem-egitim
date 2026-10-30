@@ -9,4 +9,19 @@ enum Kategori {
   final String ikon;
 
   const Kategori(this.baslik, this.ikon);
+
+  static Kategori? fromApi(String name) {
+    switch (name.toLowerCase()) {
+      case 'electronics':
+        return elektronik;
+      case 'jewelery':
+        return aksesuar;
+      case 'men\'s clothing':
+        return giyim;
+      case 'women\'s clothing':
+        return giyim;
+      default:
+        return ayakkabi;
+    }
+  }
 }

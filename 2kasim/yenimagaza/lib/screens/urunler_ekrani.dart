@@ -3,6 +3,19 @@ import 'package:yenimagaza/models/urun_model.dart';
 import 'package:yenimagaza/services/repositary.dart';
 import 'package:yenimagaza/widgets/my_card.dart';
 
+// 1. Ekran durumunu tek bir yapıda birleştirin
+class UrunlerState {
+  final List<UrunModel> urunler;
+  final bool yukleniyor;
+  final String? hataMesaji;
+
+  const UrunlerState({
+    this.urunler = const [],
+    this.yukleniyor = false,
+    this.hataMesaji,
+  });
+}
+
 class UrunlerEkrani extends StatefulWidget {
   final String title;
   const UrunlerEkrani({super.key, required this.title});
@@ -12,18 +25,29 @@ class UrunlerEkrani extends StatefulWidget {
 }
 
 class _UrunlerEkraniState extends State<UrunlerEkrani> {
-  ValueNotifier<List<UrunModel>> urunler = ValueNotifier([]);
-  final ValueNotifier<bool> yukleniyor = ValueNotifier<bool>(true);
+  final ValueNotifier<UrunlerState> _state = ValueNotifier(
+    const UrunlerState(yukleniyor: true),
+  );
 
-  Future<void> _urunleriGetir() async {
+  Future<void> _urunleriGetir({bool sessizYenile = false}) async {
+    // Sessiz yenilemede mevcut listeyi koruyarak ağacın yıkılmasını önlüyoruz
+    if (!sessizYenile) {
+      _state.value = UrunlerState(
+        urunler: _state.value.urunler,
+        yukleniyor: true,
+      );
+    }
+
     try {
-      // Eğer urunleriGetir bir fonksiyonsa () ekleyin, getter ise () kaldırın
       final liste = await Repositary.canliApi.urunleriGetir();
-      urunler.value = liste;
+      _state.value = UrunlerState(urunler: liste, yukleniyor: false);
     } catch (e) {
       debugPrint("Veri çekme hatası: $e");
-    } finally {
-      yukleniyor.value = false;
+      _state.value = UrunlerState(
+        urunler: _state.value.urunler,
+        yukleniyor: false,
+        hataMesaji: 'Ürünler yüklenirken bir hata oluştu.',
+      );
     }
   }
 
@@ -37,27 +61,51 @@ class _UrunlerEkraniState extends State<UrunlerEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: ValueListenableBuilder<bool>(
-        valueListenable: yukleniyor,
-        builder: (context, isLoading, _) {
-          if (isLoading) {
+      body: ValueListenableBuilder<UrunlerState>(
+        valueListenable: _state,
+        builder: (context, state, _) {
+          // Sadece ilk yüklemede (liste henüz boşken) tam ekran yükleniyor göster
+          if (state.yukleniyor && state.urunler.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return ValueListenableBuilder<List<UrunModel>>(
-            valueListenable: urunler,
-            builder: (context, urunListesi, _) {
-              if (urunListesi.isEmpty) {
-                return const Center(child: Text('Ürün bulunamadı.'));
-              }
+          // Hata varsa ve elde hiç veri yoksa hata ekranı ve tekrar dene butonu göster
+          if (state.hataMesaji != null && state.urunler.isEmpty) {
+            return Center(
+              child: Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(state.hataMesaji!),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: _urunleriGetir,
+                      child: const Text('Tekrar Dene'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
 
-              return ListView.builder(
-                itemCount: urunListesi.length,
-                itemBuilder: (context, index) {
-                  return MyCard(urun: urunListesi[index]);
-                },
-              );
-            },
+          if (state.urunler.isEmpty) {
+            return const Center(child: Text('Ürün bulunamadı.'));
+          }
+
+          // Liste bir kez oluştuktan sonra yenilemeler ListView ağacını yıkmaz
+          return RefreshIndicator(
+            onRefresh: () => _urunleriGetir(sessizYenile: true),
+            child: ListView.builder(
+              itemCount: state.urunler.length,
+              itemBuilder: (context, index) {
+                final urun = state.urunler[index];
+                return MyCard(
+                  // Elemanların yeniden kullanımını (Element reuse) optimize eder
+                  key: ObjectKey(urun),
+                  urun: urun,
+                );
+              },
+            ),
           );
         },
       ),
@@ -66,8 +114,7 @@ class _UrunlerEkraniState extends State<UrunlerEkrani> {
 
   @override
   void dispose() {
-    urunler.dispose();
-    yukleniyor.dispose();
+    _state.dispose();
     super.dispose();
   }
 }

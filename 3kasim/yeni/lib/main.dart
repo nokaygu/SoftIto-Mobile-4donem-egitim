@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:yeni/fire_store_yonetim_ekrani.dart';
+import 'package:yeni/screens/fire_store_yonetim_ekrani.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

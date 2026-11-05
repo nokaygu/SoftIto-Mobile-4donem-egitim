@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required to take profile pictures.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library access is required to select pictures.</string>
 </dict>
 </plist>

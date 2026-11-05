@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../models/bildirim_modeli.dart';
 
 class BildirimListesiKarti extends StatelessWidget {
-//bildirimler listeni kaybetmemeye dikkat stmeli
+  //bildirimler listeni kaybetmemeye dikkat stmeli
   final List<BildirimModeli> bildirimler;
   final String? token;
   final bool konuyaAbonemi;
-//dwger değişirse tetikleme
+  //dwger değişirse tetikleme
   final ValueChanged<bool> onAboneDegisti;
 
   const BildirimListesiKarti({
@@ -21,22 +21,22 @@ class BildirimListesiKarti extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-//yumuşak kenarlı dikdörtgen sınır
+      //yumuşak kenarlı dikdörtgen sınır
 
       shape: RoundedRectangleBorder(
         borderRadius:
-//16lık kenarlardan ovallaştirme
- BorderRadius.circular(16),
+            //16lık kenarlardan ovallaştirme
+            BorderRadius.circular(16),
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: Padding(
-//her kenardan 16 içeriden boşluk
+        //her kenardan 16 içeriden boşluk
         padding: const EdgeInsets.all(16),
         child: Column(
-//column cross axisi yatay hizadır 
+          //column cross axisi yatay hizadır
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-//satır
+            //satır
             Row(
               children: [
                 const Icon(
@@ -44,11 +44,11 @@ class BildirimListesiKarti extends StatelessWidget {
                   color: Color(0xFF006C4A),
                 ),
                 const SizedBox(width: 8),
-             //const ile performans expanded ile görselsorunengelleme
-   const Expanded(
+                //const ile performans expanded ile görselsorunengelleme
+                const Expanded(
                   child: Text(
                     'FCM Bildirim Merkezi',
-//kalın yazı tipi
+                    //kalın yazı tipi
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class BildirimListesiKarti extends StatelessWidget {
                     ),
                   ),
                 ),
-//bu dart switxhi ddğil abonedeğişince tetiklenir
+                //bu dart switxhi ddğil abonedeğişince tetiklenir
                 Switch(
                   value: konuyaAbonemi,
                   onChanged: onAboneDegisti,
@@ -92,7 +92,7 @@ class BildirimListesiKarti extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-//seçilebilir yazı
+                  //seçilebilir yazı
                   SelectableText(
                     token ?? 'token alınıyor',
                     style: const TextStyle(
@@ -113,7 +113,7 @@ class BildirimListesiKarti extends StatelessWidget {
                 color: Color.fromARGB(0, 5, 249, 253),
               ),
             ),
-//eğer bildirimler bışsa henüz gelen bilfitiö yok değils listwievde göster
+            //eğer bildirimler bışsa henüz gelen bilfitiö yok değils listwievde göster
             const SizedBox(height: 8),
             bildirimler.isEmpty
                 ? Container(
@@ -133,7 +133,36 @@ class BildirimListesiKarti extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: bildirimler.length,
                     separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, index) {},
+                    itemBuilder: (context, index) {
+                      final b = bildirimler[index];
+                      return ListTile(
+                        //önceden geelcek paddig varsa içe onu yok et
+                        contentPadding: EdgeInsets.zero,
+                        leading: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(0, 123, 238, 230),
+                          child: Icon(
+                            Icons.mark_email_unread_outlined,
+                            color: Color.fromARGB(0, 28, 176, 127),
+                            size: 20,
+                          ),
+                        ),
+                        title: Text(
+                          b.baslik,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        subtitle: Text(b.icerik),
+                        trailing: Text(
+                          '${b.tarih.hour.toString().padLeft(2, '0')}:${b.tarih.minute.toString().padLeft(2, '0')}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      );
+                    },
                   ),
           ],
         ),

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../models/bildirim_modeli.dart';
 
 class BildirimListesiKarti extends StatelessWidget {
+//bildirimler listeni kaybetmemeye dikkat stmeli
   final List<BildirimModeli> bildirimler;
   final String? token;
   final bool konuyaAbonemi;
+//dwger değişirse tetikleme
   final ValueChanged<bool> onAboneDegisti;
 
   const BildirimListesiKarti({
@@ -19,15 +21,22 @@ class BildirimListesiKarti extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
+//yumuşak kenarlı dikdörtgen sınır
+
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius:
+//16lık kenarlardan ovallaştirme
+ BorderRadius.circular(16),
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: Padding(
+//her kenardan 16 içeriden boşluk
         padding: const EdgeInsets.all(16),
         child: Column(
+//column cross axisi yatay hizadır 
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+//satır
             Row(
               children: [
                 const Icon(
@@ -35,9 +44,11 @@ class BildirimListesiKarti extends StatelessWidget {
                   color: Color(0xFF006C4A),
                 ),
                 const SizedBox(width: 8),
-                const Expanded(
+             //const ile performans expanded ile görselsorunengelleme
+   const Expanded(
                   child: Text(
                     'FCM Bildirim Merkezi',
+//kalın yazı tipi
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -45,6 +56,7 @@ class BildirimListesiKarti extends StatelessWidget {
                     ),
                   ),
                 ),
+//bu dart switxhi ddğil abonedeğişince tetiklenir
                 Switch(
                   value: konuyaAbonemi,
                   onChanged: onAboneDegisti,
@@ -80,6 +92,7 @@ class BildirimListesiKarti extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
+//seçilebilir yazı
                   SelectableText(
                     token ?? 'token alınıyor',
                     style: const TextStyle(
@@ -100,6 +113,7 @@ class BildirimListesiKarti extends StatelessWidget {
                 color: Color.fromARGB(0, 5, 249, 253),
               ),
             ),
+//eğer bildirimler bışsa henüz gelen bilfitiö yok değils listwievde göster
             const SizedBox(height: 8),
             bildirimler.isEmpty
                 ? Container(

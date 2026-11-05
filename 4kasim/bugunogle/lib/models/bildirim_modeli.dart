@@ -11,7 +11,7 @@ class BildirimModeli {
     required this.tarih,
     this.okunduMu = false,
   });
-
+//okundu mu final değiştirmek için copywith kullanarak tamaen yeni bir obje oluştur
   BildirimModeli copyWith({
     String? id,
     String? baslik,

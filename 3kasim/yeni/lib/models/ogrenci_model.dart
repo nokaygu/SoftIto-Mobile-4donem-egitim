@@ -14,7 +14,8 @@ class OgrenciModel {
     required this.notu,
     required this.kayitTarihi,
   });
-
+//factory static erişim verir objemizi ürettirir
+//firestorede veritabanımızdan modelimize dönüş yapıyoruz map kullanıyoryz
   factory OgrenciModel.fromFireStore(DocumentSnapshot doc) {
     final veri = doc.data() as Map<String, dynamic>? ?? {};
 

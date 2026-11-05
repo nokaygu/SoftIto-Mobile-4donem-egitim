@@ -5,12 +5,14 @@ class OgrenciEklemeFormu extends StatefulWidget {
   final FireStoreOgrenciServisi servis;
 
   const OgrenciEklemeFormu({super.key, required this.servis});
-
+//alt çizgi private yapar dışarıdan erişilemez 
+//görsel güncelleme varsa stateful widget yaparız state tutma yaparız
   @override
   State<OgrenciEklemeFormu> createState() => _OgrenciEklemeFormuState();
 }
 
 class _OgrenciEklemeFormuState extends State<OgrenciEklemeFormu> {
+//text editingcontroller ile yazı düzenleme kontrolü
   final TextEditingController _adSoyadKontrolcusu = TextEditingController();
   final TextEditingController _projeKontrolcusu = TextEditingController();
   final TextEditingController _notKontrolcusu = TextEditingController();
@@ -22,19 +24,19 @@ class _OgrenciEklemeFormuState extends State<OgrenciEklemeFormu> {
     _notKontrolcusu.dispose();
     super.dispose();
   }
-
+//trimle boşlukları siler
   void _yeniOgrenciKaydet() {
     final adSoyad = _adSoyadKontrolcusu.text.trim();
     final project = _projeKontrolcusu.text.trim();
     final not = int.tryParse(_notKontrolcusu.text.trim()) ?? 0;
 
     if (adSoyad.isEmpty || project.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+ //snackbar ekranın altında gözüken geçici bildirim     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Lütfen ad soyad ve proje adını giriniz')),
       );
       return;
     }
-
+//ogrenci eklendikten sonra temizleme yapıyoruz
     widget.servis.ogrenciEkle(adSoyad: adSoyad, projeAdi: project, notu: not);
     _adSoyadKontrolcusu.clear();
     _projeKontrolcusu.clear();
@@ -45,6 +47,7 @@ class _OgrenciEklemeFormuState extends State<OgrenciEklemeFormu> {
   @override
   Widget build(BuildContext context) {
     return Padding(
+//her kenardan içe padding yaptık sojra da içine colum koyduk bu columnun açısından dışına oldu
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [

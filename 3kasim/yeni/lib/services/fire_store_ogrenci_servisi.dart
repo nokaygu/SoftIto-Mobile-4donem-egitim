@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yeni/models/ogrenci_model.dart';
-
+//fire store dabtabase koleksiyon mantığıyla çalışır 
 class FireStoreOgrenciServisi {
   final CollectionReference _ogrencilerKoleksiyonu = FirebaseFirestore.instance
       .collection('ogrenciler');
@@ -9,6 +9,7 @@ class FireStoreOgrenciServisi {
     required String projeAdi,
     required int notu,
   }) async {
+//koleksiyona try catch içinde ekleme yapıyoruz timestamp olarak servertimestamp kullanarak databsrdeki kayıt tarihini alıyoruz
     try {
       await _ogrencilerKoleksiyonu.add({
         'adSoyad': adSoyad,
@@ -28,13 +29,16 @@ class FireStoreOgrenciServisi {
     required String adSoyad,
     required String projeAdi,
   }) async {
+//istersek tcnoyu id olarak kullanabiliriz
+//set put gibidir yoksa ekler varsa günceller
+//merge true demezsek eski varolan veriler komple silinir
     await _ogrencilerKoleksiyonu.doc(tcNo).set({
       'adSoyad': adSoyad,
       'projeAdi': projeAdi,
       'guncellemeTarihi': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
-
+//snapshot ile koleksşyonsan nota azalan şekilde sııralama yaptık mao için fromfiresyore ile kendi modellerimziin listesine çevirdik
   Future<List<OgrenciModel>> tumOgrencileriGetir() async {
     try {
       final QuerySnapshot snapshot = await _ogrencilerKoleksiyonu
@@ -48,6 +52,7 @@ class FireStoreOgrenciServisi {
       return [];
     }
   }
+//koleksiyon içinde update ile not günceleme yapıyoruz
 
   Future<void> ogrenciNotuGuncelle(String documentId, int yeniNot) async {
     await _ogrencilerKoleksiyonu.doc(documentId).update({

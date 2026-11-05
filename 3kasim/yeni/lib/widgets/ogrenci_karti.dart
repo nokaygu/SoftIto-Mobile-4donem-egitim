@@ -12,7 +12,9 @@ class OgrenciKarti extends StatelessWidget {
     required this.onSil,
     required this.onDuzenle,
   });
-
+//dismissible silenebilir öge
+//baştan sona kaydırılımca silinsin
+//sağdece sağ içeriden boşluk
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -24,7 +26,9 @@ class OgrenciKarti extends StatelessWidget {
         color: Colors.red,
         child: const Icon(Icons.delete_forever, color: Colors.white),
       ),
+//sağa çejilince onsill CALLBACK
       onDismissed: (direction) => onSil(),
+//çember avatar not 80dwn büyüksw yeşil değilse -> 50den büyükse turuncu değilse kırmızı
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: ogrenci.notu >= 80
@@ -38,6 +42,7 @@ class OgrenciKarti extends StatelessWidget {
             ),
           ),
         ),
+//kalın font trailing ucuna button iconlar 
         title: Text(
           ogrenci.adSoyad,
           style: const TextStyle(fontWeight: FontWeight.bold),

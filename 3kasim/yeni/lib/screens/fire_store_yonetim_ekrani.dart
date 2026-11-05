@@ -4,6 +4,7 @@ import 'package:yeni/models/ogrenci_model.dart';
 import 'package:yeni/services/fire_store_ogrenci_servisi.dart';
 import 'package:yeni/widgets/ogrenci_ekleme_formu.dart';
 import 'package:yeni/widgets/ogrenci_karti.dart';
+//yönetim ekranımız scaffold ile girer titleı veririz stateful olur
 
 class FireStoreYonetimEkrani extends StatefulWidget {
   const FireStoreYonetimEkrani({super.key});
@@ -87,6 +88,8 @@ class _FireStoreYonetimEkraniState extends State<FireStoreYonetimEkrani> {
       ),
     );
   }
+
+//notguncele dialog öürebci verisini alır not verisi dışarıdan alınır güncellemir
 
   void _notGuncelleDialog(OgrenciModel ogrenci) {
     final TextEditingController yeniNotKontrolcusu = TextEditingController(
